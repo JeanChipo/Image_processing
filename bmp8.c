@@ -50,15 +50,22 @@ void bmp8_printInfo(t_bmp8 *img) {
     printf("  | Data Size: %u \n", img->dataSize);
 }
 
-// ################### //
-
-/*
 void bmp8_negative(t_bmp8 * img) {
-    for (int i = 0; i < img->height; i++) {
-        char * line = img->colorTable[i];
-        for (int j = 0; j < img->width; j++) {
-            line[j] = 255 - line[j];
+    for (unsigned int i = 0; i < img->dataSize; i++) {
+        img->data[i] = 255 - img->data[i];
+    }
+    printf("tamer");
+}
+
+void bmp8_brightness(t_bmp8 * img, int brightness) {
+    for (unsigned int i = 0; i < img->dataSize; i++) {
+        int newValue = img->data[i] + brightness;
+        if (newValue < 0) {
+            img->data[i] = 0;
+        } else if (newValue > 255) {
+            img->data[i] = 255;
+        } else {
+            img->data[i] = (unsigned char)newValue;
         }
     }
-} 
-*/
+}

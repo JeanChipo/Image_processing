@@ -11,6 +11,9 @@ int main() {
 
     bmp8_saveImage("lena_gray_copy.bmp", image);
     bmp8_printInfo(image);
+
+    bmp8_negative(image);
+
     bmp8_free(image);
     return 0;
 }
