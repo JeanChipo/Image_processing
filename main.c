@@ -9,12 +9,7 @@ int main() {
         return 1;
     }
 
-    printf("Image chargée avec succès !\n");
-    printf("Largeur : %u pixels\n", image->width);
-    printf("Hauteur : %u pixels\n", image->height);
-    printf("Profondeur de couleur : %u bits\n", image->colorDepth);
-
-    // Libérer la mémoire
+    bmp8_printInfo(image);
     bmp8_free(image);
     return 0;
 }
