@@ -2,7 +2,7 @@
 #include "bmp8.h"
 
 int main() {
-    t_bmp8 *image = bmp8_loadImage("./lena_gray.bmp"); // Remplacer par ton vrai fichier BMP 8 bits
+    t_bmp8 *image = bmp8_loadImage("./lena_gray.bmp");
 
     if (image == NULL) {
         printf("Erreur lors du chargement de l'image.\n");

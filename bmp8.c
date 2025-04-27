@@ -3,6 +3,8 @@
 #include <string.h>
 #include "bmp8.h"
 
+
+
 t_bmp8 * bmp8_loadImage(const char * filename) {
     FILE *file = fopen(filename, "rb"); // rb for read binary
     if (!file) {
@@ -74,5 +76,16 @@ void bmp8_free(t_bmp8 *img) {
     if (img) {
         if (img->data) free(img->data);
         free(img);
+    }
+}
+
+// ################### //
+
+void bmp8_negative(t_bmp8 * img) {
+    for (int i = 0; i < img->height; i++) {
+        char * line = img->colorTable[i];
+        for (int j = 0; j < img->width; j++) {
+            line[j] = 255 - line[j];
+        }
     }
 }
