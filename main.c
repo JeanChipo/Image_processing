@@ -9,6 +9,7 @@ int main() {
         return 1;
     }
 
+    bmp8_saveImage("lena_gray_copy.bmp", image);
     bmp8_printInfo(image);
     bmp8_free(image);
     return 0;
