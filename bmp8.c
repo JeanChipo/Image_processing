@@ -8,8 +8,12 @@ t_bmp8 * bmp8_loadImage(const char * filename) {
     t_bmp8 *img = (t_bmp8 *)malloc(sizeof(t_bmp8)); // allocate memory for the image structure
 
     unsigned char header[54];
-    fread(header, sizeof(unsigned char), 54, file); // read the header
- 
+    fread(header, sizeof(unsigned char), 54, file); // read the header into a local array
+
+    for (int i = 0; i < 54; i++) {  // copy the header into img->header
+        img->header[i] = header[i];
+    }
+
     img->width = *(unsigned int *)&header[18];
     img->height = *(unsigned int *)&header[22];
     img->colorDepth = *(unsigned short *)&header[28]; // color depth is 2 bytes -> unsigned short
