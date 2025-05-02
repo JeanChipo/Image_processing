@@ -3,6 +3,8 @@
 #include <string.h>
 #include "bmp8.h"
 
+// Lecture et écriture d’une image en niveaux de gris //
+
 t_bmp8 * bmp8_loadImage(const char * filename) {
     FILE *file = fopen(filename, "rb"); // rb for read binary
     t_bmp8 *img = (t_bmp8 *)malloc(sizeof(t_bmp8)); // allocate memory for the image structure
@@ -42,6 +44,8 @@ void bmp8_free(t_bmp8 *img) {
     }
 }
 
+// Traitements d’une image en niveaux de gris //
+
 void bmp8_printInfo(t_bmp8 *img) {
     printf("Image Info:\n");
     printf("  | Width: %u \n", img->width);
@@ -52,9 +56,9 @@ void bmp8_printInfo(t_bmp8 *img) {
 
 void bmp8_negative(t_bmp8 * img) {
     for (unsigned int i = 0; i < img->dataSize; i++) {
-        img->data[i] = 255 - img->data[i];
+        unsigned int NewValue = 255 - img->data[i] ;
+        img->data[i] = NewValue ;
     }
-    printf("tamer");
 }
 
 void bmp8_brightness(t_bmp8 * img, int brightness) {
@@ -68,4 +72,10 @@ void bmp8_brightness(t_bmp8 * img, int brightness) {
             img->data[i] = (unsigned char)newValue;
         }
     }
+}
+
+// Filtres d’images //
+
+void bmp8_applyFilter(t_bmp8 * img, float ** kernel, int kernelSize) {
+
 }
