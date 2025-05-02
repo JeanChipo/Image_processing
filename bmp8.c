@@ -77,5 +77,38 @@ void bmp8_brightness(t_bmp8 * img, int brightness) {
 // Filtres d’images //
 
 void bmp8_applyFilter(t_bmp8 * img, float ** kernel, int kernelSize) {
+    int n = kernelSize / 2;
+    unsigned char *newData = (unsigned char *)malloc(img->dataSize * sizeof(unsigned char));
 
+    for (unsigned int i = 0; i < img->dataSize; i++) {
+        newData[i] = img->data[i];
+    }
+
+    for (unsigned int y = n; y < img->height - n; y++) {    // go trough each pixel of the image
+        for (unsigned int x = n; x < img->width - n; x++) {
+            float newValue = 0.0;
+
+            for (int ky = -n; ky <= n; ky++) {  // apply the kernel for each pixel in the kernel
+                for (int kx = -n; kx <= n; kx++) {
+                    int pixelX = x + kx;
+                    int pixelY = y + ky;
+                    unsigned char pixelValue = img->data[pixelY * img->width + pixelX];
+                    newValue += pixelValue * kernel[ky + n][kx + n];
+                }
+            }
+            if (newValue < 0) {
+                newValue = 0;
+            } 
+            else if (newValue > 255) {
+                newValue = 255;
+            }
+            newData[y * img->width + x] = (unsigned char)newValue;  // set the new value to the new data
+        }
+    }    
+
+    for (unsigned int i = 0; i < img->dataSize; i++) {  // copy the new data to the original data
+        img->data[i] = newData[i];
+    }
+
+    free(newData);
 }
