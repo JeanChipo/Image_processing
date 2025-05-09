@@ -8,7 +8,7 @@ typedef struct {
 
     unsigned int width; // offset à 18 de l'en-tête  
     unsigned int height; // offset à 22 de l'en-tête
-    unsigned int colorDepth; // offset à 28 de l'en-tête
+    unsigned short colorDepth; // offset à 28 de l'en-tête
     unsigned int dataSize; // offset à 34 de l'en-tête
 } t_bmp8;
 
