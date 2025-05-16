@@ -26,6 +26,9 @@ t_bmp8 * bmp8_loadImage(const char * filename) {
 
     img->data = (unsigned char *)malloc(img->dataSize * sizeof(unsigned char)); // allocate memory for the image data
 
+    if (img->dataSize == 0)
+        img->dataSize = ((img->width * img->colorDepth + 31)/32) * 4 * img->height;
+
     fread(img->data, sizeof(unsigned char), img->dataSize, file); // read the image data
     fclose(file);
     return img;
