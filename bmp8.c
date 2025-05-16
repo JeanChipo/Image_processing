@@ -16,6 +16,9 @@ t_bmp8 * bmp8_loadImage(const char * filename) {
         img->header[i] = header[i];
     }
 
+    // Read color table (palette) for 8-bit BMP
+    fread(img->colorTable, sizeof(unsigned char), 1024, file);
+
     img->width = *(unsigned int *)&header[18];
     img->height = *(unsigned int *)&header[22];
     img->colorDepth = *(unsigned short *)&header[28]; // color depth is 2 bytes -> unsigned short
@@ -31,6 +34,7 @@ t_bmp8 * bmp8_loadImage(const char * filename) {
 void bmp8_saveImage(const char * filename, t_bmp8 * img) {
     FILE *file = fopen(filename, "wb"); // wb for write binary
     fwrite(img->header, sizeof(unsigned char), 54, file); // write the header
+    fwrite(img->colorTable, sizeof(unsigned char), 1024, file); // write the color table
     fwrite(img->data, sizeof(unsigned char), img->dataSize, file); // write the image data
     fclose(file);
 }
