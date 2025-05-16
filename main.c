@@ -94,7 +94,13 @@ int main() {
                     for (int i = 0; i < 3; i++) {
                         for (int j = 0; j < 3; j++) {
                             printf("Valeur [%d][%d] : ", i, j);
-                            scanf("%f", &filter6[i][j]);
+                            float value;
+                            scanf("%f", &value);
+                            while(value < -255 || value > 255) {
+                                printf("Valeur invalide, veuillez entrer une valeur entre -255 et 255 : ");
+                                scanf("%f", &value);
+                            }
+                            filter6[i][j] = value;
                         }
                     }
                     float *kernel6[3] = { filter6[0], filter6[1], filter6[2] };
