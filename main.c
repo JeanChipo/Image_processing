@@ -7,9 +7,9 @@ int main() {
 
     int choix = 0;
     printf("===image processing en c===\n\n");
-    printf("quel traitement voulez-vous appliquer a l'image?\n 1) negatif\n 2) luminosite\n 3) filtre\n : ");
+    printf("quel traitement voulez-vous appliquer a l'image?\n 1) negatif\n 2) luminosite\n 3) threshold\n 4) filtres: ");
     scanf("%d", &choix);
-    while (choix < 1 || choix > 3) {
+    while (choix < 1 || choix > 4) {
         printf("\nchoix invalide, veuillez reessayer\n");
         scanf("%d", &choix);
     }
@@ -30,6 +30,10 @@ int main() {
             break;
         }
         case 3: {
+            bmp8_threshold(image);
+            break;
+        }
+        case 4: {
             printf("choisissez le filtre:\n 1) box_blur\n 2) gaussian_blur\n 3) outline\n 4) emboss\n 5) sharpen\n 6) custom : ");
             int filter_select = 1;
             scanf("%d", &filter_select);

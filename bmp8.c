@@ -81,6 +81,16 @@ void bmp8_brightness(t_bmp8 * img, int brightness) {
     }
 }
 
+
+void bmp8_threshold(t_bmp8 * img) {
+    for (unsigned int i = 0; i < img->dataSize; i++) {
+        if (img->data[i] < 128) {
+            img->data[i] = 0;
+        } else {
+            img->data[i] = 255;
+        }
+    }
+}
 // Filtres d’images //
 
 void bmp8_applyFilter(t_bmp8 * img, float ** kernel, int kernelSize) {
