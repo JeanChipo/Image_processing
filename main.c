@@ -44,9 +44,9 @@ int main() {
             switch (filter_select) {
                 case 1: {
                     float filter1[3][3] = {
-                        {1, 1, 1},
-                        {1, 1, 1},
-                        {1, 1, 1}
+                        {0.11, 0.11, 0.11},
+                        {0.11, 0.11, 0.11},
+                        {0.11, 0.11, 0.11}
                     };
                     float *kernel1[3] = { filter1[0], filter1[1], filter1[2] };
                     bmp8_applyFilter(image, kernel1, 3);
@@ -54,9 +54,9 @@ int main() {
                 }
                 case 2: {
                     float filter2[3][3] = {
-                        {1, 2, 1},
-                        {2, 4, 2},
-                        {1, 2, 1}
+                        {0.0625, 0.125, 0.0625},
+                        {0.125, 0.25, 0.125},
+                        {0.0625, 0.125, 0.0625}
                     };
                     float *kernel2[3] = { filter2[0], filter2[1], filter2[2] };
                     bmp8_applyFilter(image, kernel2, 3);
@@ -119,6 +119,6 @@ int main() {
     bmp8_printInfo(image);
     bmp8_saveImage("lena_gray_copy.bmp", image);
     bmp8_free(image);
-    printf("Traitement terminé. Image sauvegardée sous 'lena_gray_copy.bmp'.\n");
+    printf("Traitement termine. Image sauvegardee sous 'lena_gray_copy.bmp'.\n");
     return 0;
 }
