@@ -41,3 +41,12 @@ t_bmp24 * bmp24_allocate(int width, int height, int colorDepth) {
 
     return img;
 }
+
+void bmp24_free(t_bmp24 *img) {
+    if (img) {
+        if (img->data) {
+            bmp24_freeDataPixels(img->data, img->height);
+        }
+        free(img);
+    }
+}
