@@ -91,19 +91,23 @@ void bmp24_freeDataPixels(t_pixel **pixels, int height) {
 }
 
 
-t_bmp24 * bmp24_allocate(int width, int height, int colorDepth) {
+t_bmp24 * bmp24_allocate(t_bmp_header *header, t_bmp_info *header_info, int colorDepth) {
     t_bmp24 *img = (t_bmp24 *)malloc(sizeof(t_bmp24));
-    img->width = width;
-    img->height = height;
+    if (!img) return NULL;
+
+    img->header = *header;
+    img->header_info = *header_info;
+    img->width = header_info->width;
+    img->height = header_info->height;
     img->colorDepth = colorDepth;
-    img->data = bmp24_allocateDataPixels(width, height);
+    img->data = bmp24_allocateDataPixels(img->width, img->height);
 
     if (img->data == NULL) {
         free(img);
         return NULL;
     }
 
-    return img->data;
+    return img;
 }
 
 void bmp24_free(t_bmp24 *img) {
