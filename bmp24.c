@@ -60,7 +60,10 @@ void bmp24_saveImage(const char * filename, t_bmp24 * img) {
 
     // Écriture des pixels (BGR, ligne par ligne, avec padding)
     for (int i = 0; i < img->header_info.width*img->header_info.height; i++) {
-        fwrite(img->data[i], sizeof(uint8_t), 1, file);
+        t_pixel *pixel = img->data[i];
+        fwrite(pixel->red, sizeof(uint8_t), 8, file);
+        fwrite(pixel->green, sizeof(uint8_t), 8, file);
+        fwrite(pixel->blue, sizeof(uint8_t), 8, file);
     }
 
     fclose(file);
