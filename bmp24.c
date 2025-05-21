@@ -4,7 +4,7 @@
 
 t_bmp24 * bmp24_loadImage(const char * filename) {
     FILE *file = fopen(filename, "rb"); // rb for read binary
-    t_bmp24 *img = (t_bmp24 *)malloc(sizeof(t_bmp24)); // allocate memory for the image structure
+    int img;
     
     t_bmp_header *header = (t_bmp_header *)malloc(sizeof(t_bmp_header)); // allocate memory for the header
     header->type = fread(header, sizeof(unsigned char), 16, file);
@@ -27,18 +27,7 @@ t_bmp24 * bmp24_loadImage(const char * filename) {
     info->importantcolors = fread(info, sizeof(unsigned char), 32, file);
     
         
-    int *data_list = bmp24_allocate (info->width, info->height, 24);
-
-    for (int i = 0; i < info->width*info->height; i++) {
-        fread(data_list[i], sizeof(unsigned char), sizeof(uint8_t), file);
-    }
-
-    img->header = *header;
-    img->header_info = *info;
-    img->width = info->width;
-    img->height = info->height;
-    img->colorDepth = 24;
-    img->data = data_list;
+    img = bmp24_allocate (header, info, 24);
 
     fclose(file);
     free(header);
