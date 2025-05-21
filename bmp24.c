@@ -2,22 +2,34 @@
 #include "bmp24.h"
 
 
-t_bmp8 * bmp24_loadImage(const char * filename) {
+t_bmp24 * bmp24_loadImage(const char * filename) {
     FILE *file = fopen(filename, "rb"); // rb for read binary
     t_bmp24 *img = (t_bmp24 *)malloc(sizeof(t_bmp24)); // allocate memory for the image structure
     t_bmp_header *header = (t_bmp_header *)malloc(sizeof(t_bmp_header)); // allocate memory for the header
 
-    header->type = fread(header, sizeof(unsigned char), 16, file)
-    header->size = fread(header, sizeof(unsigned char), 32, file)
-    header->reserved1 = fread(header, sizeof(unsigned char), 16, file)
-    header->reserved2 = fread(header, sizeof(unsigned char), 16, file)
-    header->offset = fread(header, sizeof(unsigned char), 32, file)
+    header->type = fread(header, sizeof(unsigned char), 16, file);
+    header->size = fread(header, sizeof(unsigned char), 32, file);
+    header->reserved1 = fread(header, sizeof(unsigned char), 16, file);
+    header->reserved2 = fread(header, sizeof(unsigned char), 16, file);
+    header->offset = fread(header, sizeof(unsigned char), 32, file);
 
+    t_bmp_info *info = (t_bmp_info *)malloc(sizeof(t_bmp_info));
+    info->size = fread(info, sizeof(unsigned char), 32, file);
+    info->width = fread(info, sizeof(unsigned char), 32, file);
+    info->height = fread(info, sizeof(unsigned char), 32, file);
+    info->planes = fread(info, sizeof(unsigned char), 16, file);
+    info->bits = fread(info, sizeof(unsigned char), 16, file);
+    info->compression = fread(info, sizeof(unsigned char), 32, file);
+    info->imagesize = fread(info, sizeof(unsigned char), 32, file);
+    info->xresolution = fread(info, sizeof(unsigned char), 32, file);
+    info->yresolution = fread(info, sizeof(unsigned char), 32, file);
+    info->ncolors = fread(info, sizeof(unsigned char), 32, file);
+    info->importantcolors = fread(info, sizeof(unsigned char), 32, file);
     
         
-    int *data_list = bmp24_allocate (int width, int height, int colorDepth);
+    int *data_list = bmp24_allocate (info->width, info->height, 24);
 
-    for (int i = 0; i < width*height*3; i++) {
+    for (int i = 0; i < info->width*info->height*3; i++) {
         fread(data_list[i], sizeof(unsigned char), sizeof(uint8_t), file);
     }
 
