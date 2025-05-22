@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "bmp8.h"
+#include "bmp24.h"
 
 void process_brightness(t_bmp8 * image) {
     int brightness;
@@ -141,7 +142,9 @@ int main() {
         break;
         }
         case 2: {
-            // to add
+            t_bmp24 *image = bmp24_loadImage("./lena_color.bmp");
+            bmp24_saveImage("lena_color_copy.bmp", image);
+
             break;
         } 
     }
