@@ -144,7 +144,7 @@ int main() {
         case 2: {
             t_bmp24 *image = bmp24_loadImage("./lena_color.bmp");
             bmp24_saveImage("lena_color_copy.bmp", image);
-
+            // hello
             break;
         } 
     }
