@@ -41,26 +41,25 @@ void bmp24_saveImage(const char * filename, t_bmp24 * img) {
 
     // Écriture du header BMP (14 octets)
     t_bmp_header *header = &img->header;
-    fwrite(header->type, sizeof(uint16_t), 16, file);
-    fwrite(header->size, sizeof(uint32_t), 32, file);
-    fwrite(header->reserved1, sizeof(uint16_t), 16, file);
-    fwrite(header->reserved2, sizeof(uint16_t), 16, file);
-    fwrite(header->offset, sizeof(uint32_t), 32, file);
-    free(header);
+    fwrite(&header->type, sizeof(uint16_t), 16, file);
+    fwrite(&header->size, sizeof(uint32_t), 32, file);
+    fwrite(&header->reserved1, sizeof(uint16_t), 16, file);
+    fwrite(&header->reserved2, sizeof(uint16_t), 16, file);
+    fwrite(&header->offset, sizeof(uint32_t), 32, file);
 
     // Écriture du header info BMP (généralement 40 octets)
     t_bmp_info *header_info = &img->header_info;
-    fwrite(header_info->size, sizeof(uint32_t), 32, file);
-    fwrite(header_info->width, sizeof(int32_t), 32, file);
-    fwrite(header_info->height, sizeof(int32_t), 32, file);
-    fwrite(header_info->planes, sizeof(uint16_t), 16, file);
-    fwrite(header_info->bits, sizeof(uint16_t), 16, file);
-    fwrite(header_info->compression, sizeof(uint32_t), 32, file);
-    fwrite(header_info->imagesize, sizeof(uint32_t), 32, file);
-    fwrite(header_info->xresolution, sizeof(int32_t), 32, file);
-    fwrite(header_info->yresolution, sizeof(int32_t), 32, file);
-    fwrite(header_info->ncolors, sizeof(uint32_t), 32, file);
-    fwrite(header_info->importantcolors, sizeof(uint32_t), 32, file);
+    fwrite(&header_info->size, sizeof(uint32_t), 32, file);
+    fwrite(&header_info->width, sizeof(int32_t), 32, file);
+    fwrite(&header_info->height, sizeof(int32_t), 32, file);
+    fwrite(&header_info->planes, sizeof(uint16_t), 16, file);
+    fwrite(&header_info->bits, sizeof(uint16_t), 16, file);
+    fwrite(&header_info->compression, sizeof(uint32_t), 32, file);
+    fwrite(&header_info->imagesize, sizeof(uint32_t), 32, file);
+    fwrite(&header_info->xresolution, sizeof(int32_t), 32, file);
+    fwrite(&header_info->yresolution, sizeof(int32_t), 32, file);
+    fwrite(&header_info->ncolors, sizeof(uint32_t), 32, file);
+    fwrite(&header_info->importantcolors, sizeof(uint32_t), 32, file);
     free(header_info);
 
     // Écriture des pixels (BGR, ligne par ligne, avec padding)
