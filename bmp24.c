@@ -207,4 +207,25 @@ void bmp24_brightness (t_bmp24 * img, int value) {
 
 t_pixel bmp24_convolution (t_bmp24 * img, int x, int y, float ** kernel, int kernelSize) {
     int n = kernelSize / 2;
+    
+    uint8_t new_red = 0, new_green = 0, new_blue = 0;
+    t_pixel new_pixel;
+
+    for (int ky = -n; ky <= n; ky++) {
+        for (int kx = -n; kx <= n; kx++) {
+            int pixelX = x + kx;
+            int pixelY = y + ky;
+            if (pixelX < 0 || pixelX >= img->width || pixelY < 0 || pixelY >= img->height) {
+                continue; // Ignore pixels outside the image
+            }
+            new_red += kx*kernel[ky + n][kx + n] * img->data[pixelY][pixelX].red;
+            new_green += kx*kernel[ky + n][kx + n] * img->data[pixelY][pixelX].green;
+            new_blue += kx*kernel[ky + n][kx + n] * img->data[pixelY][pixelX].blue;
+
+            new_pixel.red = new_red;
+            new_pixel.green = new_green;
+            new_pixel.blue = new_blue;
+        }
+    }
+    return new_pixel;
 }
