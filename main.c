@@ -95,6 +95,103 @@ void process_filters(t_bmp8 * image) {
 }
 
 
+
+
+void process_filters24(t_bmp8 * image) {
+    printf("choisissez le filtre:\n 1) box_blur\n 2) gaussian_blur\n 3) outline\n 4) emboss\n 5) sharpen\n 6) custom : ");
+    int filter_select = 1;
+    scanf("%d", &filter_select);
+    while (filter_select < 1 || filter_select > 6) {
+        printf("choix invalide, veuillez reessayer\n");
+        scanf("%d", &filter_select);
+    }
+    switch (filter_select) {
+        case 1: {
+            float filter1[3][3] = {
+                {0.11, 0.11, 0.11},
+                {0.11, 0.11, 0.11},
+                {0.11, 0.11, 0.11}
+            };
+            float *kernel1[3] = { filter1[0], filter1[1], filter1[2] };
+            process_convolution(image, kernel1, 3);
+            break;
+        }
+        case 2: {
+            float filter2[3][3] = {
+                {0.0625, 0.125, 0.0625},
+                {0.125, 0.25, 0.125},
+                {0.0625, 0.125, 0.0625}
+            };
+            float *kernel2[3] = { filter2[0], filter2[1], filter2[2] };
+            process_convolution(image, kernel2, 3);
+            break;
+        }
+        case 3: {
+            float filter3[3][3] = {
+                {0, -1, 0},
+                {-1, 4, -1},
+                {0, -1, 0}
+            };
+            float *kernel3[3] = { filter3[0], filter3[1], filter3[2] };
+            process_convolution(image, kernel3, 3);
+            break;
+        }
+        case 4: {
+            float filter4[3][3] = {
+                {-2, -1, 0},
+                {-1, 1, 1},
+                {0, 1, 2}
+            };
+            float *kernel4[3] = { filter4[0], filter4[1], filter4[2] };
+            process_convolution(image, kernel4, 3);
+            break;
+        }
+        case 5: {
+            float filter5[3][3] = {
+                {0, -1, 0},
+                {-1, 5, -1},
+                {0, -1, 0}
+            };
+            float *kernel5[3] = { filter5[0], filter5[1], filter5[2] };
+            process_convolution(image, kernel5, 3);
+            break;
+        }
+        case 6: {
+            float filter6[3][3];
+            printf("Entrez les 9 valeurs du filtre 3x3 :\n");
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    printf("Valeur [%d][%d] : ", i, j);
+                    float value;
+                    scanf("%f", &value);
+                    while(value < -255 || value > 255) {
+                        printf("Valeur invalide, veuillez entrer une valeur entre -255 et 255 : ");
+                        scanf("%f", &value);
+                    }
+                    filter6[i][j] = value;
+                }
+            }
+            float *kernel6[3] = { filter6[0], filter6[1], filter6[2] };
+            process_convolution(image, kernel6, 3);
+            break;
+        }
+    }
+}
+
+
+void process_convolution(t_bmp24 *image_copy , float fliter[3][3]) {
+    for (int i = 0; i < image->height; i++) {
+        for (int j = 0; j < image->width; j++) {
+            img->data[y][x] = bmp24_convolution(image_copy, j, i, fliter, 3);
+        }
+    }
+}
+
+
+
+
+
+
 int main() {
     int bmp_ver; 
     printf("quel format de bmp utilise votre image? \n 1) bmp8 - niveau de gris \n 2) bmp24 - en couleur \n");
@@ -164,6 +261,10 @@ int main() {
                         scanf("%d", &brightness);
                     }
                     bmp24_brightness (image, brightness);
+                    break;
+                }
+                case 4: {
+                    process_filters24(image);
                     break;
                 }
             }
