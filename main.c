@@ -155,6 +155,17 @@ int main() {
                     bmp24_grayscale (image);
                     break;
                 }
+                case 3: {
+                    printf("entrez la valeur de luminosite (entre -255 et 255): \n");
+                    int brightness;
+                    scanf("%d", &brightness);
+                    while (brightness < -255 || brightness > 255) {
+                        printf("valeur invalide, veuillez reessayer\n");
+                        scanf("%d", &brightness);
+                    }
+                    bmp24_brightness (image, brightness);
+                    break;
+                }
             }
             bmp24_saveImage("lena_color_copy.bmp", image);
             // hello

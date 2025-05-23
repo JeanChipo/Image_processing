@@ -66,6 +66,7 @@ t_pixel ** bmp24_allocateDataPixels (int width, int height);
 void bmp24_freeDataPixels (t_pixel ** pixels, int height);
 void bmp24_negative (t_bmp24 * img);
 void bmp24_grayscale (t_bmp24 * img);
+void bmp24_brightness (t_bmp24 * img, int value);
 
 
 
