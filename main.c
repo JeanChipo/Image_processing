@@ -97,7 +97,7 @@ void process_filters(t_bmp8 * image) {
 
 
 
-void process_filters24(t_bmp8 * image) {
+void process_filters24(t_bmp24 * image) {
     printf("choisissez le filtre:\n 1) box_blur\n 2) gaussian_blur\n 3) outline\n 4) emboss\n 5) sharpen\n 6) custom : ");
     int filter_select = 1;
     t_bmp24 *image_copy;
