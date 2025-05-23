@@ -143,6 +143,30 @@ int main() {
         }
         case 2: {
             t_bmp24 *image = bmp24_loadImage("./lena_color.bmp");
+            printf("choisissez le traitement a appliquer:\n 1) negatif\n 2) niveaux de gris\n");
+            int choix = 0;
+            scanf("%d", &choix);
+            switch (choix) {
+                case 1: {
+                    bmp24_negative(image);
+                    break;
+                }
+                case 2: {
+                    bmp24_grayscale (image);
+                    break;
+                }
+                case 3: {
+                    printf("entrez la valeur de luminosite (entre -255 et 255): \n");
+                    int brightness;
+                    scanf("%d", &brightness);
+                    while (brightness < -255 || brightness > 255) {
+                        printf("valeur invalide, veuillez reessayer\n");
+                        scanf("%d", &brightness);
+                    }
+                    bmp24_brightness (image, brightness);
+                    break;
+                }
+            }
             bmp24_saveImage("lena_color_copy.bmp", image);
             // hello
             break;

@@ -150,6 +150,61 @@ void bmp24_free(t_bmp24 *img) {
     free(img);
 }
 
+
+void bmp24_negative (t_bmp24 * img) {
+    for (int y = 0; y < img->height; y++) {
+        for (int x = 0; x < img->width; x++) {
+            img->data[y][x].red = 255 - img->data[y][x].red;
+            img->data[y][x].green = 255 - img->data[y][x].green;
+            img->data[y][x].blue = 255 - img->data[y][x].blue;
+        }
+    }
+}
+
+
+
+void bmp24_grayscale (t_bmp24 * img) {
+    for (int y = 0; y < img->height; y++) {
+        for (int x = 0; x < img->width; x++) {
+            uint8_t gray = (img->data[y][x].red + img->data[y][x].green + img->data[y][x].blue) / 3;
+            img->data[y][x].red = gray;
+            img->data[y][x].green = gray;
+            img->data[y][x].blue = gray;
+        }
+    }
+}
+
+
+void bmp24_brightness (t_bmp24 * img, int value) {
+    for (int y = 0; y < img->height; y++) {
+        for (int x = 0; x < img->width; x++) {
+            if (img->data[y][x].red + value > 255) {
+                img->data[y][x].red = 255;
+            } else if (img->data[y][x].red + value < 0) {
+                img->data[y][x].red = 0;
+            } else {
+                img->data[y][x].red = img->data[y][x].red + value;
+            }
+
+            if (img->data[y][x].green + value > 255) {
+                img->data[y][x].green = 255;
+            } else if (img->data[y][x].green + value < 0) {
+                img->data[y][x].green = 0;
+            } else {
+                img->data[y][x].green = img->data[y][x].green + value;
+            }
+
+            if (img->data[y][x].blue + value > 255) {
+                img->data[y][x].blue = 255;
+            } else if (img->data[y][x].blue + value < 0) {
+                img->data[y][x].blue = 0;
+            } else {
+                img->data[y][x].blue = img->data[y][x].blue + value;
+            }
+        }
+    }
+}
+
 t_pixel bmp24_convolution (t_bmp24 * img, int x, int y, float ** kernel, int kernelSize) {
     int n = kernelSize / 2;
 }
