@@ -100,6 +100,8 @@ void process_filters(t_bmp8 * image) {
 void process_filters24(t_bmp8 * image) {
     printf("choisissez le filtre:\n 1) box_blur\n 2) gaussian_blur\n 3) outline\n 4) emboss\n 5) sharpen\n 6) custom : ");
     int filter_select = 1;
+    t_bmp24 *image_copy;
+    memcpy(image_copy, image, sizeof(t_bmp24));
     scanf("%d", &filter_select);
     while (filter_select < 1 || filter_select > 6) {
         printf("choix invalide, veuillez reessayer\n");
@@ -113,7 +115,7 @@ void process_filters24(t_bmp8 * image) {
                 {0.11, 0.11, 0.11}
             };
             float *kernel1[3] = { filter1[0], filter1[1], filter1[2] };
-            process_convolution(image, kernel1, 3);
+            process_convolution(image_copy, image, kernel1, 3);
             break;
         }
         case 2: {
@@ -123,7 +125,7 @@ void process_filters24(t_bmp8 * image) {
                 {0.0625, 0.125, 0.0625}
             };
             float *kernel2[3] = { filter2[0], filter2[1], filter2[2] };
-            process_convolution(image, kernel2, 3);
+            process_convolution(image_copy, image, kernel2, 3);
             break;
         }
         case 3: {
@@ -133,7 +135,7 @@ void process_filters24(t_bmp8 * image) {
                 {0, -1, 0}
             };
             float *kernel3[3] = { filter3[0], filter3[1], filter3[2] };
-            process_convolution(image, kernel3, 3);
+            process_convolution(image_copy, image, kernel3, 3);
             break;
         }
         case 4: {
@@ -143,7 +145,7 @@ void process_filters24(t_bmp8 * image) {
                 {0, 1, 2}
             };
             float *kernel4[3] = { filter4[0], filter4[1], filter4[2] };
-            process_convolution(image, kernel4, 3);
+            process_convolution(image_copy, image, kernel4, 3);
             break;
         }
         case 5: {
@@ -153,7 +155,7 @@ void process_filters24(t_bmp8 * image) {
                 {0, -1, 0}
             };
             float *kernel5[3] = { filter5[0], filter5[1], filter5[2] };
-            process_convolution(image, kernel5, 3);
+            process_convolution(image_copy, image, kernel5, 3);
             break;
         }
         case 6: {
@@ -172,17 +174,17 @@ void process_filters24(t_bmp8 * image) {
                 }
             }
             float *kernel6[3] = { filter6[0], filter6[1], filter6[2] };
-            process_convolution(image, kernel6, 3);
+            process_convolution(image_copy, image, kernel6, 3);
             break;
         }
     }
 }
 
 
-void process_convolution(t_bmp24 *image_copy , float fliter[3][3]) {
+void process_convolution(t_bmp24 *image_copy, t_bmp24 *image, float fliter[3][3]; int size) {
     for (int i = 0; i < image->height; i++) {
         for (int j = 0; j < image->width; j++) {
-            img->data[y][x] = bmp24_convolution(image_copy, j, i, fliter, 3);
+            img->data[y][x] = bmp24_convolution(image_copy, j, i, fliter, size);
         }
     }
 }
