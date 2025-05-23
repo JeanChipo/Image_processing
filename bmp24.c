@@ -149,3 +149,30 @@ void bmp24_free(t_bmp24 *img) {
         }
     free(img);
 }
+
+
+
+
+
+void bmp24_negative (t_bmp24 * img) {
+    for (int y = 0; y < img->height; y++) {
+        for (int x = 0; x < img->width; x++) {
+            img->data[y][x].red = 255 - img->data[y][x].red;
+            img->data[y][x].green = 255 - img->data[y][x].green;
+            img->data[y][x].blue = 255 - img->data[y][x].blue;
+        }
+    }
+}
+
+
+
+void bmp24_grayscale (t_bmp24 * img) {
+    for (int y = 0; y < img->height; y++) {
+        for (int x = 0; x < img->width; x++) {
+            uint8_t gray = (img->data[y][x].red + img->data[y][x].green + img->data[y][x].blue) / 3;
+            img->data[y][x].red = gray;
+            img->data[y][x].green = gray;
+            img->data[y][x].blue = gray;
+        }
+    }
+}
