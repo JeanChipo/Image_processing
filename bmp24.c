@@ -1,71 +1,99 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "bmp24.h"
 
-
 t_bmp24 * bmp24_loadImage(const char * filename) {
-    FILE *file = fopen(filename, "rb"); // rb for read binary
-    t_bmp24 * img;
-    
-    t_bmp_header *header = (t_bmp_header *)malloc(sizeof(t_bmp_header)); // allocate memory for the header
-    fread(header->type, sizeof(unsigned char), 16, file);
-    fread(header->size, sizeof(unsigned char), 32, file);
-    fread(header->reserved1, sizeof(unsigned char), 16, file);
-    fread(header->reserved2, sizeof(unsigned char), 16, file);
-    fread(header->offset, sizeof(unsigned char), 32, file);
+    FILE *file = fopen(filename, "rb");
 
-    t_bmp_info *info = (t_bmp_info *)malloc(sizeof(t_bmp_info));
-    fread(info->size, sizeof(unsigned char), 32, file);
-    fread(info->width, sizeof(unsigned char), 32, file);
-    fread(info->height, sizeof(unsigned char), 32, file);
-    fread(info->planes, sizeof(unsigned char), 16, file);
-    fread(info->bits, sizeof(unsigned char), 16, file);
-    fread(info->compression, sizeof(unsigned char), 32, file);
-    fread(info->imagesize, sizeof(unsigned char), 32, file);
-    fread(info->xresolution, sizeof(unsigned char), 32, file);
-    fread(info->yresolution, sizeof(unsigned char), 32, file);
-    fread(info->ncolors, sizeof(unsigned char), 32, file);
-    fread(info->importantcolors, sizeof(unsigned char), 32, file);
-    img = bmp24_allocate (header, info, 24);
+    t_bmp_header header;
+    t_bmp_info info;
+
+    // Lecture du header BMP (14 octets)
+    fread(&header.type, sizeof(uint16_t), 1, file);
+    fread(&header.size, sizeof(uint32_t), 1, file);
+    fread(&header.reserved1, sizeof(uint16_t), 1, file);
+    fread(&header.reserved2, sizeof(uint16_t), 1, file);
+    fread(&header.offset, sizeof(uint32_t), 1, file);
+
+    // Lecture du header info BMP (40 octets)
+    fread(&info.size, sizeof(uint32_t), 1, file);
+    fread(&info.width, sizeof(int32_t), 1, file);
+    fread(&info.height, sizeof(int32_t), 1, file);
+    fread(&info.planes, sizeof(uint16_t), 1, file);
+    fread(&info.bits, sizeof(uint16_t), 1, file);
+    fread(&info.compression, sizeof(uint32_t), 1, file);
+    fread(&info.imagesize, sizeof(uint32_t), 1, file);
+    fread(&info.xresolution, sizeof(int32_t), 1, file);
+    fread(&info.yresolution, sizeof(int32_t), 1, file);
+    fread(&info.ncolors, sizeof(uint32_t), 1, file);
+    fread(&info.importantcolors, sizeof(uint32_t), 1, file);
+
+    t_bmp24 *img = bmp24_allocate(&header, &info, 24);
+
+    // Aller à l'offset des données
+    fseek(file, header.offset, SEEK_SET);
+
+    int width = info.width;
+    int height = info.height;
+    int padding = (4 - (width * 3) % 4) % 4;
+
+    // Lecture des pixels (BGR, bottom-up)
+    for (int y = height - 1; y >= 0; y--) {
+        for (int x = 0; x < width; x++) {
+            uint8_t bgr[3];
+            fread(bgr, 1, 3, file);
+            img->data[y][x].blue = bgr[0];
+            img->data[y][x].green = bgr[1];
+            img->data[y][x].red = bgr[2];
+        }
+        fseek(file, padding, SEEK_CUR);
+    }
 
     fclose(file);
-    free(header);
-    free(info);
     return img;
 }
 
 void bmp24_saveImage(const char * filename, t_bmp24 * img) {
     FILE *file = fopen(filename, "wb");
+    if (!file) return;
 
     // Écriture du header BMP (14 octets)
-    t_bmp_header *header = &img->header;
-    fwrite(header->type, sizeof(uint16_t), 16, file);
-    fwrite(header->size, sizeof(uint32_t), 32, file);
-    fwrite(header->reserved1, sizeof(uint16_t), 16, file);
-    fwrite(header->reserved2, sizeof(uint16_t), 16, file);
-    fwrite(header->offset, sizeof(uint32_t), 32, file);
-    free(header);
+    fwrite(&img->header.type, sizeof(uint16_t), 1, file);
+    fwrite(&img->header.size, sizeof(uint32_t), 1, file);
+    fwrite(&img->header.reserved1, sizeof(uint16_t), 1, file);
+    fwrite(&img->header.reserved2, sizeof(uint16_t), 1, file);
+    fwrite(&img->header.offset, sizeof(uint32_t), 1, file);
 
-    // Écriture du header info BMP (généralement 40 octets)
-    t_bmp_info *header_info = &img->header_info;
-    fwrite(header_info->size, sizeof(uint32_t), 32, file);
-    fwrite(header_info->width, sizeof(int32_t), 32, file);
-    fwrite(header_info->height, sizeof(int32_t), 32, file);
-    fwrite(header_info->planes, sizeof(uint16_t), 16, file);
-    fwrite(header_info->bits, sizeof(uint16_t), 16, file);
-    fwrite(header_info->compression, sizeof(uint32_t), 32, file);
-    fwrite(header_info->imagesize, sizeof(uint32_t), 32, file);
-    fwrite(header_info->xresolution, sizeof(int32_t), 32, file);
-    fwrite(header_info->yresolution, sizeof(int32_t), 32, file);
-    fwrite(header_info->ncolors, sizeof(uint32_t), 32, file);
-    fwrite(header_info->importantcolors, sizeof(uint32_t), 32, file);
+    // Écriture du header info BMP (40 octets)
+    fwrite(&img->header_info.size, sizeof(uint32_t), 1, file);
+    fwrite(&img->header_info.width, sizeof(int32_t), 1, file);
+    fwrite(&img->header_info.height, sizeof(int32_t), 1, file);
+    fwrite(&img->header_info.planes, sizeof(uint16_t), 1, file);
+    fwrite(&img->header_info.bits, sizeof(uint16_t), 1, file);
+    fwrite(&img->header_info.compression, sizeof(uint32_t), 1, file);
+    fwrite(&img->header_info.imagesize, sizeof(uint32_t), 1, file);
+    fwrite(&img->header_info.xresolution, sizeof(int32_t), 1, file);
+    fwrite(&img->header_info.yresolution, sizeof(int32_t), 1, file);
+    fwrite(&img->header_info.ncolors, sizeof(uint32_t), 1, file);
+    fwrite(&img->header_info.importantcolors, sizeof(uint32_t), 1, file);
 
-    // Écriture des pixels (BGR, ligne par ligne, avec padding)
-    for (int i = 0; i < img->header_info.width*img->header_info.height; i++) {
-        t_pixel *pixel = img->data[i];
-        fwrite(&pixel->red, sizeof(uint8_t), 8, file);
-        fwrite(&pixel->green, sizeof(uint8_t), 8, file);
-        fwrite(&pixel->blue, sizeof(uint8_t), 8, file);
+    int width = img->width;
+    int height = img->height;
+    int padding = (4 - (width * 3) % 4) % 4;
+    uint8_t pad[3] = {0, 0, 0};
+
+    // Écriture des pixels (BGR, bottom-up)
+    for (int y = height - 1; y >= 0; y--) {
+        for (int x = 0; x < width; x++) {
+            uint8_t bgr[3] = {
+                img->data[y][x].blue,
+                img->data[y][x].green,
+                img->data[y][x].red
+            };
+            fwrite(bgr, 1, 3, file);
+        }
+        fwrite(pad, 1, padding, file);
     }
 
     fclose(file);
@@ -74,7 +102,7 @@ void bmp24_saveImage(const char * filename, t_bmp24 * img) {
 t_pixel ** bmp24_allocateDataPixels (int width, int height) {
     t_pixel **data = (t_pixel **)malloc(height * sizeof(t_pixel *));
     int y;
-    for (y=0, y<height; y++;) {
+    for (y = 0; y < height; y++) {
         data[y] = (t_pixel *)malloc(width * sizeof(t_pixel));
         if (data[y] == NULL) {
             printf("Erreur d'allocation de mémoire pour la ligne %d\n", y);
