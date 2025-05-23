@@ -179,10 +179,10 @@ void process_filters24(t_bmp8 * image) {
 }
 
 
-void process_convolution(t_bmp24 *image_copy , float fliter[3][3]) {
+void process_convolution(t_bmp24 *image_copy , float fliter[3][3]; int size) {
     for (int i = 0; i < image->height; i++) {
         for (int j = 0; j < image->width; j++) {
-            img->data[y][x] = bmp24_convolution(image_copy, j, i, fliter, 3);
+            img->data[y][x] = bmp24_convolution(image_copy, j, i, fliter, size);
         }
     }
 }
