@@ -149,3 +149,7 @@ void bmp24_free(t_bmp24 *img) {
         }
     free(img);
 }
+
+t_pixel bmp24_convolution (t_bmp24 * img, int x, int y, float ** kernel, int kernelSize) {
+    int n = kernelSize / 2;
+}
