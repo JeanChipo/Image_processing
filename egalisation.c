@@ -78,7 +78,7 @@ void bmp24_equalize(t_bmp24 * img) {
 
     // hist_Y
 
-    // hist_cum 
+    // hist_cumulé
 
     // nomalise CDF
 
