@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "bmp8.h"
 #include "bmp24.h"
+#include "egalisation.h"
 
 void process_brightness(t_bmp8 * image) {
     int brightness;
@@ -208,10 +209,10 @@ int main() {
     int bmp_ver; 
     printf("quel format de bmp utilise votre image? \n 1) bmp8 - niveau de gris \n 2) bmp24 - en couleur \n");
     scanf("%d", &bmp_ver);
-    while (bmp_ver < 1 || bmp_ver > 2) {
-        printf("format invalide, veuillez saisir si votre bmp est sur 8 bits (niveau de gris) ou 24 bits (en couleur) \n");
-        scanf("%d", &bmp_ver);
-    }
+    // while (bmp_ver < 1 || bmp_ver > 4) {
+    //     printf("format invalide, veuillez saisir si votre bmp est sur 8 bits (niveau de gris) ou 24 bits (en couleur) \n");
+    //     scanf("%d", &bmp_ver);
+    // }
     switch (bmp_ver) {
         case 1: {
             t_bmp8 *image = bmp8_loadImage("./lena_gray.bmp");
@@ -284,6 +285,11 @@ int main() {
             bmp24_free(image);
             break;
         } 
+        case 3: {
+            t_bmp8 *image = bmp8_loadImage("./barbara_gray.bmp");
+            bmp8_equalize(image);
+            break;
+        }
         printf("Traitement fini\n");
     }
     return 0;
