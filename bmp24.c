@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "bmp24.h"
 
 t_bmp24 * bmp24_loadImage(const char * filename) {
@@ -205,12 +204,18 @@ void bmp24_brightness (t_bmp24 * img, int value) {
     }
 }
 
+uint8_t clamp(int value) {
+    if (value < 0) return 0;
+    else if (value > 255) return 255;
+    else return (uint8_t)value;
+}
+
 t_pixel bmp24_convolution (t_bmp24 * img, int x, int y, float ** kernel, int kernelSize) {
     int n = kernelSize / 2;
-    
-    uint8_t new_red = 0, new_green = 0, new_blue = 0;
+    float sum_red = 0, sum_green = 0, sum_blue = 0;
     t_pixel new_pixel;
 
+    // Parcourir le noyau
     for (int ky = -n; ky <= n; ky++) {
         for (int kx = -n; kx <= n; kx++) {
             int pixelX = x + kx;
@@ -218,14 +223,17 @@ t_pixel bmp24_convolution (t_bmp24 * img, int x, int y, float ** kernel, int ker
             if (pixelX < 0 || pixelX >= img->width || pixelY < 0 || pixelY >= img->height) {
                 continue; // Ignore pixels outside the image
             }
-            new_red += kx*kernel[ky + n][kx + n] * img->data[pixelY][pixelX].red;
-            new_green += kx*kernel[ky + n][kx + n] * img->data[pixelY][pixelX].green;
-            new_blue += kx*kernel[ky + n][kx + n] * img->data[pixelY][pixelX].blue;
-
-            new_pixel.red = new_red;
-            new_pixel.green = new_green;
-            new_pixel.blue = new_blue;
+            float k = kernel[ky + n][kx + n];
+            sum_red += k * img->data[pixelY][pixelX].red;
+            sum_green += k * img->data[pixelY][pixelX].green;
+            sum_blue += k * img->data[pixelY][pixelX].blue;
         }
     }
+
+    // Rogner a [0,255]
+    new_pixel.red = clamp((int)sum_red);
+    new_pixel.green = clamp((int)sum_green);
+    new_pixel.blue = clamp((int)sum_blue);
+
     return new_pixel;
 }

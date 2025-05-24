@@ -98,11 +98,22 @@ void process_filters(t_bmp8 * image) {
 
 
 void process_convolution(t_bmp24 *image, float *kernel[3], int KernelSize) {
-    for (int x = 0; x < image->height; x++) {
-        for (int y = 0; y < image->width; y++) {
-            image->data[x][y] = bmp24_convolution(image, x, y, kernel, KernelSize);
+    t_bmp24 *copy = bmp24_allocate(&image->header, &image->header_info, image->colorDepth);
+
+    // Allocation de mémoire pour les pixels de l'image copiée
+    for (int y = 0; y < image->height; y++) {
+        for (int x = 0; x < image->width; x++) {
+            copy->data[y][x] = bmp24_convolution(image, x, y, kernel, KernelSize);
         }
     }
+
+    // Copie des données traitées dans l'image d'origine
+    for (int y = 0; y < image->height; y++) {
+        for (int x = 0; x < image->width; x++) {
+            image->data[y][x] = copy->data[y][x];
+        }
+    }
+    bmp24_free(copy);
 }
 
 
