@@ -6,23 +6,31 @@
 #include "egalisation.h"
 
 
+// crée un histogramme pour une image en niveaux de gris (8 bits) //
+
 unsigned int * bmp8_computeHistogram(t_bmp8 * img) {
+    // création d'un tableau pour stocker l'histogramme
     unsigned int *histogram = malloc(256 * sizeof(unsigned int));
     for (int i = 0; i < 256; i++) histogram[i] = 0;
+
+    // parcourt chaque pixel de l'image et incrémente le compteur correspondant dans l'histogramme
     for (int i = 0; i < img->dataSize; i++) {
         histogram[img->data[i]]++;
     }
     return histogram;
 }
 
+// crée un histogramme cumulatif normalisé pour une image en niveaux de gris (8 bits) //
 
 unsigned int * bmp8_computeCDF(unsigned int * hist, t_bmp8 * img) {
+    // crée un tableau pour l'histogramme cumulatif
     unsigned int *cdf = malloc(256 * sizeof(unsigned int));
     cdf[0] = hist[0];
     for (int i = 1; i < 256; i++) {
         cdf[i] = cdf[i - 1] + hist[i];
     }
 
+    // trouve la valeur minimale de l'histogramme cumulatif
     unsigned int cdf_min = 255;
     for (int i = 0; i < 256; i++) {
         if (cdf_min > cdf[i]) {
@@ -30,6 +38,7 @@ unsigned int * bmp8_computeCDF(unsigned int * hist, t_bmp8 * img) {
         }
     }
 
+    // crée un tableau pour l'histogramme égalisé
     unsigned int *hist_eq = malloc(256 * sizeof(unsigned int));
     for (int i = 0; i < 256; i++) {
         hist_eq[i] = round(((float)(cdf[i] - cdf_min) / (img->dataSize - cdf_min)) * 255);
@@ -38,10 +47,14 @@ unsigned int * bmp8_computeCDF(unsigned int * hist, t_bmp8 * img) {
     return hist_eq;
 }
 
+// aplication de l'égalisation pour une image en niveaux de gris (8 bits) //
 
 void bmp8_equalize(t_bmp8 * img) {
+    // calcule l'histogramme de l'image
     unsigned int *hist = bmp8_computeHistogram(img);
+    // calcule l'histogramme cumulatif normalisé
     unsigned int *hist_eq = bmp8_computeCDF(hist, img);
+    // applique l'égalisation à chaque pixel de l'image
     for (int i = 0; i < img->dataSize; i++) {
         img->data[i] = hist_eq[img->data[i]];
     }
@@ -62,10 +75,15 @@ void convert_YUV_to_RGB(int y, int u, int v, int *r, int *g, int *b) {
     *b = y + 2.03211 * u;
 }
 
+// crée un histogramme pour une image couleur (24 bits) //
+
 unsigned int * bmp24_computeHistogram(t_bmp24 * img) {
+    // création d'un tableau pour stocker l'histogramme et initialisation à 0
     unsigned int *histogram = malloc(256 * sizeof(unsigned int));
     int trash;
     for (int i = 0; i < 256; i++) histogram[i] = 0;
+
+    // parcourt chaque pixel de l'image et incrémente le compteur correspondant dans l'histogramme
     for (int y = 0; y < img->height; y++) {
         for (int x = 0; x < img->width; x++) {
             int y_yuv;
@@ -78,13 +96,17 @@ unsigned int * bmp24_computeHistogram(t_bmp24 * img) {
 }
 
 
+// crée un histogramme cumulatif normalisé pour une image couleur (24 bits) //
+
 unsigned int * bmp24_computeCDF(unsigned int * hist, t_bmp24 * img) {
+    // crée un tableau pour l'histogramme cumulatif
     unsigned int *cdf = malloc(256 * sizeof(unsigned int));
     cdf[0] = hist[0];
     for (int i = 1; i < 256; i++) {
         cdf[i] = cdf[i - 1] + hist[i];
     }
 
+    // trouve la valeur minimale de l'histogramme cumulatif
     unsigned int cdf_min = 256;
     for (int i = 0; i < 256; i++) {
         if (cdf_min > cdf[i]) {
@@ -92,6 +114,7 @@ unsigned int * bmp24_computeCDF(unsigned int * hist, t_bmp24 * img) {
         }
     }
 
+    // crée un tableau pour l'histogramme égalisé
     unsigned int *hist_eq = malloc(256 * sizeof(unsigned int));
     for (int i = 0; i < 256; i++) {
         hist_eq[i] = round(((float)(cdf[i] - cdf_min) / (img->height*img->width - cdf_min)) * 255);

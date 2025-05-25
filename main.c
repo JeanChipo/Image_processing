@@ -14,7 +14,10 @@ void process_brightness(t_bmp8 * image) {
     bmp8_brightness(image, brightness);
 }
 
+// Fonction pour appliquer un filtre à une image en niveaux de gris //
+
 void process_filters(t_bmp8 * image) {
+    // demande a l'utilisateur quel filtre appliquer et applique une vérification
     printf("choisissez le filtre:\n 1) box_blur\n 2) gaussian_blur\n 3) outline\n 4) emboss\n 5) sharpen\n 6) custom : ");
     int filter_select = 1;
     scanf("%d", &filter_select);
@@ -22,6 +25,8 @@ void process_filters(t_bmp8 * image) {
         printf("choix invalide, veuillez reessayer\n");
         scanf("%d", &filter_select);
     }
+
+    // Application du filtre choisi
     switch (filter_select) {
         case 1: {
             float filter1[3][3] = {
@@ -74,6 +79,7 @@ void process_filters(t_bmp8 * image) {
             break;
         }
         case 6: {
+            // Demande à l'utilisateur de saisir un filtre personnalisé
             float filter6[3][3];
             printf("Entrez les 9 valeurs du filtre 3x3 :\n");
             for (int i = 0; i < 3; i++) {
@@ -117,7 +123,10 @@ void process_convolution(t_bmp24 *image, float *kernel[3], int KernelSize) {
 }
 
 
+// Fonction pour appliquer un filtre à une image en couleur //
+
 void process_filters24(t_bmp24 * image) {
+    // demande a l'utilisateur quel filtre appliquer et applique une vérification
     printf("choisissez le filtre:\n 1) box_blur\n 2) gaussian_blur\n 3) outline\n 4) emboss\n 5) sharpen\n 6) custom \n");
     int filter_select = 1;
     scanf("%d", &filter_select);
@@ -125,6 +134,8 @@ void process_filters24(t_bmp24 * image) {
         printf("choix invalide, veuillez reessayer\n");
         scanf("%d", &filter_select);
     }
+
+    // Application du filtre choisi
     switch (filter_select) {
         case 1: {
             float filter1[3][3] = {
@@ -177,6 +188,7 @@ void process_filters24(t_bmp24 * image) {
             break;
         }
         case 6: {
+            // Demande à l'utilisateur de saisir un filtre personnalisé
             float filter6[3][3];
             printf("Entrez les 9 valeurs du filtre 3x3 :\n");
             for (int i = 0; i < 3; i++) {
@@ -213,8 +225,10 @@ int main() {
     // }
     switch (bmp_ver) {
         case 1: {
+            // Chargement de l'image en niveaux de gris
             t_bmp8 *image = bmp8_loadImage("./lena_gray.bmp");
 
+            // demande a l'utilisateur quel traitement appliquer et applque une vérification
             int choix = 0;
             printf("quel traitement voulez-vous appliquer a l'image?\n 1) negatif\n 2) luminosite\n 3) threshold\n 4) filtres \n 5) egalisation\n");
             scanf("%d", &choix);
@@ -223,6 +237,7 @@ int main() {
                 scanf("%d", &choix);
             }
         
+            // Application du traitement choisi
             switch (choix) {
                 case 1: {
                     bmp8_negative(image);
@@ -251,6 +266,7 @@ int main() {
                 }
             }
 
+            // Sauvegarde de l'image traitée et affichage des informations
             bmp8_printInfo(image);
             bmp8_saveImage("lena_gray_copy.bmp", image);
             bmp8_free(image);
@@ -259,10 +275,19 @@ int main() {
 
         
         case 2: {
+            // Chargement de l'image en couleur
             t_bmp24 *image = bmp24_loadImage("./lena_color.bmp");
+
+            // demande a l'utilisateur quel traitement appliquer et applque une vérification
             printf("choisissez le traitement a appliquer:\n 1) negatif\n 2) niveaux de gris\n 3) luminosite\n 4) filtres\n 5) egalisation\n");
             int choix = 0;
             scanf("%d", &choix);
+            while (choix < 1 || choix > 5) {
+                printf("\nchoix invalide, veuillez reessayer\n");
+                scanf("%d", &choix);
+            }
+
+            // Application du traitement choisi
             switch (choix) {
                 case 1: {
                     bmp24_negative(image);
@@ -293,23 +318,11 @@ int main() {
                 }
             }
 
+            // Sauvegarde de l'image traitée et affichage des informations
             bmp24_saveImage("lena_color_copy.bmp", image);
             bmp24_free(image);
             break;
         } 
-        case 3: {
-            t_bmp8 *image = bmp8_loadImage("./lena_gray.bmp");
-            if (!image) {
-                printf("Erreur lors du chargement de l'image.\n");
-                break;
-            }
-            bmp8_equalize(image);
-            bmp8_printInfo(image);
-            bmp8_saveImage("lena_gray_eq.bmp", image);
-            bmp8_free(image);
-            printf("Traitement fini\n");
-            break;
-        }
     }
     return 0;
 }
