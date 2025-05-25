@@ -62,6 +62,10 @@ void bmp8_equalize(t_bmp8 * img) {
     free(hist_eq);
 }
 
+// ################################################################## //
+// ### création d'un histogramme pour une image couleur (24 bits) ### //
+// ################################################################## //
+
 
 void convert_RGB_to_YUV(int r, int g, int b, int *y, int *u, int *v) {
     // applique la formule de conversion RGB vers YUV
@@ -77,10 +81,6 @@ void convert_YUV_to_RGB(int y, int u, int v, int *r, int *g, int *b) {
     *b = y + 2.03211 * u;
 }
 
-
-// ################################################################## //
-// ### création d'un histogramme pour une image couleur (24 bits) ### //
-// ################################################################## //
 
 unsigned int * bmp24_computeHistogram(t_bmp24 * img) {
     // création d'un tableau pour stocker l'histogramme et initialisation à 0
