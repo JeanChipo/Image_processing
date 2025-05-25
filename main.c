@@ -221,6 +221,10 @@ int main() {
         case 1: {
             // Chargement de l'image en niveaux de gris
             t_bmp8 *image = bmp8_loadImage("Images_input/lena_gray.bmp");
+            if (image == NULL) {
+                printf("Erreur lors du chargement de l'image.\n");
+                return 1;
+            }
             bmp8_printInfo(image);
 
             // demande a l'utilisateur quel traitement appliquer et applque une vérification
@@ -269,6 +273,10 @@ int main() {
         case 2: {
             // Chargement de l'image en couleur
             t_bmp24 *image = bmp24_loadImage("Images_input/lena_color.bmp");
+            if (image == NULL) {
+                printf("Erreur lors du chargement de l'image.\n");
+                return 1;
+            }
 
             // demande a l'utilisateur quel traitement appliquer et applque une vérification
             printf("choisissez le traitement a appliquer:\n 1) negatif\n 2) niveaux de gris\n 3) luminosite\n 4) filtres\n 5) egalisation\n> ");
