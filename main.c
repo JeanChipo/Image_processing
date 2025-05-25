@@ -15,10 +15,10 @@ void process_brightness(t_bmp8 * image) {
 }
 
 void process_filters(t_bmp8 * image) {
-    printf("choisissez le filtre:\n 1) box_blur\n 2) gaussian_blur\n 3) outline\n 4) emboss\n 5) sharpen\n 6) custom : ");
+    printf("choisissez le filtre:\n 1) box_blur\n 2) gaussian_blur\n 3) outline\n 4) emboss\n 5) sharpen\n 6) custom 7) equalization\n : ");
     int filter_select = 1;
     scanf("%d", &filter_select);
-    while (filter_select < 1 || filter_select > 6) {
+    while (filter_select < 1 || filter_select > 7) {
         printf("choix invalide, veuillez reessayer\n");
         scanf("%d", &filter_select);
     }
@@ -90,6 +90,14 @@ void process_filters(t_bmp8 * image) {
             }
             float *kernel6[3] = { filter6[0], filter6[1], filter6[2] };
             bmp8_applyFilter(image, kernel6, 3);
+            break;
+        case 7:
+            t_bmp8 *image = bmp8_loadImage("./lena_gray.bmp");
+            bmp8_equalize(image);
+            bmp8_printInfo(image);
+            bmp8_saveImage("lena_gray_eq.bmp", image);
+            bmp8_free(image);
+            printf("Traitement fini\n");
             break;
         }
     }
