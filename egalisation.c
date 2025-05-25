@@ -1,3 +1,10 @@
+/* 
+Fichier de traitement d'égalisation d'histogramme pour les images BMP 8 et 24 bits
+Il contient les fonctions de création d'histogramme, de calcul de CDF, et d'égalisation 
+pour les images en niveaux de gris (BMP 8) et en couleur (BMP 24).
+auteurs : @JeanChipo, @WarennOne
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>

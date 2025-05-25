@@ -1,3 +1,9 @@
+/* 
+Fichier de traitement d'images BMP 24 en couleur.
+Il contient les fonctions de chargement, sauvegarde, et traitement d'images en couleur.
+auteurs : @JeanChipo, @WarennOne
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "bmp24.h"
