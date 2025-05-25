@@ -256,8 +256,6 @@ int main() {
                 }
                 case 5: {
                     bmp8_equalize(image);
-                    bmp8_saveImage("./lena_gray_eq.bmp", image);
-                    bmp8_free(image);
                     break;
                 }
             }
