@@ -213,7 +213,7 @@ int main() {
     // }
     switch (bmp_ver) {
         case 1: {
-            t_bmp8 *image = bmp8_loadImage("./lena_gray.bmp");
+            t_bmp8 *image = bmp8_loadImage("Images_input/lena_gray.bmp");
 
             int choix = 0;
             printf("quel traitement voulez-vous appliquer a l'image?\n 1) negatif\n 2) luminosite\n 3) threshold\n 4) filtres \n 5) egalisation\n");
@@ -241,10 +241,10 @@ int main() {
                     break;
                 }
                 case 5: {
-                    t_bmp8 *image = bmp8_loadImage("./lena_gray.bmp");
+                    t_bmp8 *image = bmp8_loadImage("Images_input/lena_gray.bmp");
                     bmp8_equalize(image);
                     bmp8_printInfo(image);
-                    bmp8_saveImage("lena_gray_eq.bmp", image);
+                    bmp8_saveImage("Images_output/lena_gray_eq.bmp", image);
                     bmp8_free(image);
                     printf("Traitement fini\n");
                     break;
@@ -252,14 +252,14 @@ int main() {
             }
 
             bmp8_printInfo(image);
-            bmp8_saveImage("lena_gray_copy.bmp", image);
+            bmp8_saveImage("Images_output/lena_gray_copy.bmp", image);
             bmp8_free(image);
             break;
         }
 
         
         case 2: {
-            t_bmp24 *image = bmp24_loadImage("./lena_color.bmp");
+            t_bmp24 *image = bmp24_loadImage("Images_input/lena_color.bmp");
             printf("choisissez le traitement a appliquer:\n 1) negatif\n 2) niveaux de gris\n 3) luminosite\n 4) filtres\n 5) egalisation\n");
             int choix = 0;
             scanf("%d", &choix);
@@ -293,19 +293,19 @@ int main() {
                 }
             }
 
-            bmp24_saveImage("lena_color_copy.bmp", image);
+            bmp24_saveImage("Images_output/lena_color_copy.bmp", image);
             bmp24_free(image);
             break;
         } 
         case 3: {
-            t_bmp8 *image = bmp8_loadImage("./lena_gray.bmp");
+            t_bmp8 *image = bmp8_loadImage("Images_input/lena_gray.bmp");
             if (!image) {
                 printf("Erreur lors du chargement de l'image.\n");
                 break;
             }
             bmp8_equalize(image);
             bmp8_printInfo(image);
-            bmp8_saveImage("lena_gray_eq.bmp", image);
+            bmp8_saveImage("Images_output/lena_gray_eq.bmp", image);
             bmp8_free(image);
             printf("Traitement fini\n");
             break;

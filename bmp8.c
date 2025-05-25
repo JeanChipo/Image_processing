@@ -7,29 +7,31 @@
 
 t_bmp8 * bmp8_loadImage(const char * filename) {
     FILE *file = fopen(filename, "rb"); // rb for read binary
-    t_bmp8 *img = (t_bmp8 *)malloc(sizeof(t_bmp8)); // allocate memory for the image structure
+    t_bmp8 *img = (t_bmp8 *)malloc(sizeof(t_bmp8));
 
     unsigned char header[54];
-    fread(header, sizeof(unsigned char), 54, file); // read the header into a local array
+    fread(header, sizeof(unsigned char), 54, file); // lecture du header dans un tableau local de 54 octets
 
-    for (int i = 0; i < 54; i++) {  // copy the header into img->header
-        img->header[i] = header[i];
+    for (int i = 0; i < 54; i++) {
+        img->header[i] = header[i];  // copie du header dans le champ header de la structure t_bmp8
     }
 
-    // Read color table (palette) for 8-bit BMP
+    // lecture de la table de couleurs (palette) pour les BMP 8 bits
     fread(img->colorTable, sizeof(unsigned char), 1024, file);
 
     img->width = *(unsigned int *)&header[18];
     img->height = *(unsigned int *)&header[22];
-    img->colorDepth = *(unsigned short *)&header[28]; // color depth is 2 bytes -> unsigned short
+    img->colorDepth = *(unsigned short *)&header[28]; // color depth fait 2 bytes -> unsigned short
     img->dataSize = *(unsigned int *)&header[34];
 
-    img->data = (unsigned char *)malloc(img->dataSize * sizeof(unsigned char)); // allocate memory for the image data
+    // allocation de mémoire pour les données de l'image
+    img->data = (unsigned char *)malloc(img->dataSize * sizeof(unsigned char)); 
 
+    // si la taille des données n'est pas spécifiée, on la calcule
     if (img->dataSize == 0)
         img->dataSize = ((img->width * img->colorDepth + 31)/32) * 4 * img->height;
 
-    fread(img->data, sizeof(unsigned char), img->dataSize, file); // read the image data
+    fread(img->data, sizeof(unsigned char), img->dataSize, file); // lecture des données de l'image
     fclose(file);
     return img;
 }
