@@ -6,10 +6,10 @@
 void process_brightness(t_bmp8 * image) {
     // fonction pour appliquer un traitement de luminosité à une image en niveaux de gris
     int brightness;
-    printf("entrez la valeur de luminosite (entre -255 et 255): \n");
+    printf("entrez la valeur de luminosite (entre -255 et 255)\n> ");
     scanf("%d", &brightness);
     while (brightness < -255 || brightness > 255) {
-        printf("valeur invalide, veuillez reessayer\n");
+        printf("valeur invalide, veuillez reessayer.\n> ");
         scanf("%d", &brightness);
     }
     bmp8_brightness(image, brightness);
@@ -18,11 +18,11 @@ void process_brightness(t_bmp8 * image) {
 
 void process_filters(t_bmp8 * image) {
     // demande a l'utilisateur quel filtre appliquer et applique une vérification
-    printf("choisissez le filtre:\n 1) box_blur\n 2) gaussian_blur\n 3) outline\n 4) emboss\n 5) sharpen\n 6) custom : ");
+    printf("choisissez le filtre:\n 1) box_blur\n 2) gaussian_blur\n 3) outline\n 4) emboss\n 5) sharpen\n 6) custom\n> ");
     int filter_select = 1;
     scanf("%d", &filter_select);
     while (filter_select < 1 || filter_select > 7) {
-        printf("choix invalide, veuillez reessayer\n");
+        printf("choix invalide, veuillez reessayer\n> ");
         scanf("%d", &filter_select);
     }
 
@@ -81,13 +81,13 @@ void process_filters(t_bmp8 * image) {
         case 6: {
             // Demande à l'utilisateur de saisir un filtre personnalisé
             float filter6[3][3];
-            printf("Entrez les 9 valeurs du filtre 3x3 :\n");
+            printf("Entrez les 9 valeurs du filtre 3x3\n> ");
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
                     float value;
                     scanf("%f", &value);
                     while(value < -255 || value > 255) {
-                        printf("Valeur invalide, veuillez entrer une valeur entre -255 et 255 : ");
+                        printf("Valeur invalide, veuillez entrer une valeur entre -255 et 255.\n> ");
                         scanf("%f", &value);
                     }
                     filter6[i][j] = value;
@@ -125,11 +125,11 @@ void process_filters24(t_bmp24 * image) {
     // Fonction pour appliquer un filtre à une image en couleur //
 
     // demande a l'utilisateur quel filtre appliquer et applique une vérification
-    printf("choisissez le filtre:\n 1) box_blur\n 2) gaussian_blur\n 3) outline\n 4) emboss\n 5) sharpen\n 6) custom \n");
+    printf("choisissez le filtre:\n 1) box_blur\n 2) gaussian_blur\n 3) outline\n 4) emboss\n 5) sharpen\n 6) custom\n> ");
     int filter_select = 1;
     scanf("%d", &filter_select);
     while (filter_select < 1 || filter_select > 6) {
-        printf("choix invalide, veuillez reessayer\n");
+        printf("choix invalide, veuillez reessayer.\n> ");
         scanf("%d", &filter_select);
     }
 
@@ -188,13 +188,13 @@ void process_filters24(t_bmp24 * image) {
         case 6: {
             // Demande à l'utilisateur de saisir un filtre personnalisé
             float filter6[3][3];
-            printf("Entrez les 9 valeurs du filtre 3x3 :\n");
+            printf("Entrez les 9 valeurs du filtre 3x3\n> ");
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
                     float value;
                     scanf("%f", &value);
                     while(value < -255 || value > 255) {
-                        printf("Valeur invalide, veuillez entrer une valeur entre -255 et 255 : ");
+                        printf("Valeur invalide, veuillez entrer une valeur entre -255 et 255\n> ");
                         scanf("%f", &value);
                     }
                     filter6[i][j] = value;
@@ -220,7 +220,7 @@ int main() {
     switch (bmp_ver) {
         case 1: {
             // Chargement de l'image en niveaux de gris
-            t_bmp8 *image = bmp8_loadImage("Images_input/lena_gray.bmp");
+            t_bmp8 *image = bmp8_loadImage("./lena_gray.bmp");
             if (image == NULL) {
                 printf("Erreur lors du chargement de l'image.\n");
                 return 1;
@@ -256,7 +256,7 @@ int main() {
                 }
                 case 5: {
                     bmp8_equalize(image);
-                    bmp8_saveImage("Images_output/lena_gray_eq.bmp", image);
+                    bmp8_saveImage("./lena_gray_eq.bmp", image);
                     bmp8_free(image);
                     break;
                 }
@@ -264,7 +264,7 @@ int main() {
             printf("Traitement fini !\n");
             
             // Sauvegarde de l'image traitée
-            bmp8_saveImage("Images_output/lena_gray_copy.bmp", image);
+            bmp8_saveImage("./lena_gray_copy.bmp", image);
             bmp8_free(image);
             break;
         }
@@ -272,7 +272,7 @@ int main() {
         
         case 2: {
             // Chargement de l'image en couleur
-            t_bmp24 *image = bmp24_loadImage("Images_input/lena_color.bmp");
+            t_bmp24 *image = bmp24_loadImage("./lena_color.bmp");
             if (image == NULL) {
                 printf("Erreur lors du chargement de l'image.\n");
                 return 1;
@@ -320,7 +320,7 @@ int main() {
             printf("Traitement fini\n");
             
             // Sauvegarde de l'image traitée
-            bmp24_saveImage("Images_output/lena_color_copy.bmp", image);
+            bmp24_saveImage("./lena_color_copy.bmp", image);
             bmp24_free(image);
             break;
         } 
