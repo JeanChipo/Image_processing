@@ -18,7 +18,7 @@ void process_filters(t_bmp8 * image) {
     printf("choisissez le filtre:\n 1) box_blur\n 2) gaussian_blur\n 3) outline\n 4) emboss\n 5) sharpen\n 6) custom : ");
     int filter_select = 1;
     scanf("%d", &filter_select);
-    while (filter_select < 1 || filter_select > 6) {
+    while (filter_select < 1 || filter_select > 7) {
         printf("choix invalide, veuillez reessayer\n");
         scanf("%d", &filter_select);
     }
@@ -78,7 +78,6 @@ void process_filters(t_bmp8 * image) {
             printf("Entrez les 9 valeurs du filtre 3x3 :\n");
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
-                    printf("Valeur [%d][%d] : ", i, j);
                     float value;
                     scanf("%f", &value);
                     while(value < -255 || value > 255) {
@@ -182,7 +181,6 @@ void process_filters24(t_bmp24 * image) {
             printf("Entrez les 9 valeurs du filtre 3x3 :\n");
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
-                    printf("Valeur [%d][%d] : ", i, j);
                     float value;
                     scanf("%f", &value);
                     while(value < -255 || value > 255) {
@@ -218,9 +216,9 @@ int main() {
             t_bmp8 *image = bmp8_loadImage("./lena_gray.bmp");
 
             int choix = 0;
-            printf("quel traitement voulez-vous appliquer a l'image?\n 1) negatif\n 2) luminosite\n 3) threshold\n 4) filtres \n");
+            printf("quel traitement voulez-vous appliquer a l'image?\n 1) negatif\n 2) luminosite\n 3) threshold\n 4) filtres \n 5) egalisation\n");
             scanf("%d", &choix);
-            while (choix < 1 || choix > 4) {
+            while (choix < 1 || choix > 5) {
                 printf("\nchoix invalide, veuillez reessayer\n");
                 scanf("%d", &choix);
             }
@@ -242,14 +240,24 @@ int main() {
                     process_filters(image);
                     break;
                 }
+                case 5: {
+                    t_bmp8 *image = bmp8_loadImage("./lena_gray.bmp");
+                    bmp8_equalize(image);
+                    bmp8_printInfo(image);
+                    bmp8_saveImage("lena_gray_eq.bmp", image);
+                    bmp8_free(image);
+                    printf("Traitement fini\n");
+                    break;
+                }
             }
 
             bmp8_printInfo(image);
             bmp8_saveImage("lena_gray_copy.bmp", image);
             bmp8_free(image);
-
-        break;
+            break;
         }
+
+        
         case 2: {
             t_bmp24 *image = bmp24_loadImage("./lena_color.bmp");
             printf("choisissez le traitement a appliquer:\n 1) negatif\n 2) niveaux de gris\n 3) luminosite\n 4) filtres\n 5) egalisation\n");
