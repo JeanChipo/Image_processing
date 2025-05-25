@@ -60,6 +60,48 @@ int convert_YUV_to_RGB(int y, int u, int v, int *r, int *g, int *b) {
     *b = y + 2.03211 * u;
 }
 
+
+
+unsigned int * bmp24_computeHistogram(t_bmp24 * img) {
+    unsigned int *histogram = malloc(256 * sizeof(unsigned int));
+    for (int i = 0; i < 256; i++) histogram[i] = 0;
+    for (int y = 0; y < img->height; y++) {
+        for (int x = 0; x < img->width; x++) {
+            int y;
+            convert_RGB_to_YUV(img->data[y][x].red, img->data[y][x].green, img->data[y][x].blue, &y, NULL, NULL);
+            histogram[y]++;
+        }
+    }
+        
+    return histogram;
+}
+
+
+unsigned int * bmp24_computeCDF(unsigned int * hist, t_bmp24 * img) {
+    unsigned int *cdf = malloc(256 * sizeof(unsigned int));
+    cdf[0] = hist[0];
+    for (int i = 1; i < 256; i++) {
+        cdf[i] = cdf[i - 1] + hist[i];
+    }
+
+    unsigned int cdf_min = 256;
+    for (int i = 0; i < 256; i++) {
+        if (cdf_min > cdf[i]) {
+            cdf_min = cdf[i];
+        }
+    }
+
+    unsigned int *hist_eq = malloc(256 * sizeof(unsigned int));
+    for (int i = 0; i < 256; i++) {
+        hist_eq[i] = round(((float)(cdf[i] - cdf_min) / (img->height*img->width - cdf_min)) * 255);
+    }
+    free(cdf);
+    return hist_eq;
+}
+
+
+
+
 void bmp24_equalize(t_bmp24 * img) {
     int nb_pixels = img->width * img->height;
     t_yuv *yuv_pixels = malloc(nb_pixels * sizeof(t_yuv));
