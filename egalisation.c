@@ -100,7 +100,13 @@ unsigned int * bmp24_computeCDF(unsigned int * hist, t_bmp24 * img) {
 }
 
 
-
+int clamp(int value) {
+    if (value < 0) {
+        value = 0;
+    } else if (value > 255) {
+        value = 255;
+    }
+}
 
 void bmp24_equalize(t_bmp24 * img) {
     int nb_pixels = img->width * img->height;
@@ -115,13 +121,23 @@ void bmp24_equalize(t_bmp24 * img) {
     }
 
     // hist_Y
+    unsigned int *hist_Y = bmp24_computeHistogram(img);
 
-    // hist_cumulé
-
-    // nomalise CDF
+    // hist_cumulé & normalisé
+    unsigned int *cdf_Y = bmp24_computeCDF(hist_Y, img);
 
     // appliquer equalise à Y
+    for (int i = 0; i < nb_pixels; i++) {
+        yuv_pixels[i].y = cdf_Y[yuv_pixels[i].y];
+    }
 
     // reconvertir YUV -> RGB
+    int r, g, b;
+    for (int i = 0; i < nb_pixels; i++) {
+        convert_YUV_to_RGB(yuv_pixels[i].y, yuv_pixels[i].u, yuv_pixels[i].v, &r, &g, &b);
+        img->data[i]->red = clamp(r);
+        img->data[i]->green = clamp(g);
+        img->data[i]->blue = clamp(b);
+    }
 
 }
