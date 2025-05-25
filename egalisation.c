@@ -48,31 +48,32 @@ void bmp8_equalize(t_bmp8 * img) {
     free(hist);
     free(hist_eq);
 }
+
+
 void convert_RGB_to_YUV(int r, int g, int b, int *y, int *u, int *v) {
     *y = 0.299 * r + 0.587 * g + 0.114 * b;
     *u = -0.14713 * r - 0.28886 * g + 0.436 * b ;
     *v = 0.615 * r - 0.51499 * g - 0.10001 * b;
 }
 
-int convert_YUV_to_RGB(int y, int u, int v, int *r, int *g, int *b) {
+void convert_YUV_to_RGB(int y, int u, int v, int *r, int *g, int *b) {
     *r = y + 1.13983 * v;
     *g = y - 0.39465 * u - 0.58060 * v;
     *b = y + 2.03211 * u;
 }
 
-
-
 unsigned int * bmp24_computeHistogram(t_bmp24 * img) {
     unsigned int *histogram = malloc(256 * sizeof(unsigned int));
+    int trash;
     for (int i = 0; i < 256; i++) histogram[i] = 0;
     for (int y = 0; y < img->height; y++) {
         for (int x = 0; x < img->width; x++) {
-            int y;
-            convert_RGB_to_YUV(img->data[y][x].red, img->data[y][x].green, img->data[y][x].blue, &y, NULL, NULL);
-            histogram[y]++;
+            int y_yuv;
+            convert_RGB_to_YUV(img->data[y][x].red, img->data[y][x].green, img->data[y][x].blue, &y_yuv, &trash, &trash);
+            y_yuv = clamp_255(y_yuv);
+            histogram[y_yuv]++;
         }
     }
-        
     return histogram;
 }
 
@@ -100,24 +101,31 @@ unsigned int * bmp24_computeCDF(unsigned int * hist, t_bmp24 * img) {
 }
 
 
-int clamp(int value) {
+int clamp_255(int value) {
     if (value < 0) {
-        value = 0;
+        return 0;
     } else if (value > 255) {
-        value = 255;
+        return 255;
     }
+    return value;
 }
 
 void bmp24_equalize(t_bmp24 * img) {
-    int nb_pixels = img->width * img->height;
+    int width = img->width;
+    int height = img->height;
+    int nb_pixels = width * height;
     t_yuv *yuv_pixels = malloc(nb_pixels * sizeof(t_yuv));
 
     // convertition RGB -> YUV
-    for (int i = 0; i < nb_pixels; i++) {
-        int r = img->data[i]->red;
-        int g = img->data[i]->green;
-        int b = img->data[i]->blue;
-        convert_RGB_to_YUV(r, g, b, &yuv_pixels[i].y, &yuv_pixels[i].u, &yuv_pixels[i].v);
+    int i = 0;
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++, i++) {
+            int r = img->data[y][x].red;
+            int g = img->data[y][x].green;
+            int b = img->data[y][x].blue;
+            convert_RGB_to_YUV(r, g, b, &yuv_pixels[i].y, &yuv_pixels[i].u, &yuv_pixels[i].v);
+            yuv_pixels[i].y = clamp_255(yuv_pixels[i].y);
+        }
     }
 
     // hist_Y
@@ -128,16 +136,22 @@ void bmp24_equalize(t_bmp24 * img) {
 
     // appliquer equalise à Y
     for (int i = 0; i < nb_pixels; i++) {
-        yuv_pixels[i].y = cdf_Y[yuv_pixels[i].y];
+        yuv_pixels[i].y = cdf_Y[clamp_255(yuv_pixels[i].y)];
     }
 
     // reconvertir YUV -> RGB
-    int r, g, b;
-    for (int i = 0; i < nb_pixels; i++) {
-        convert_YUV_to_RGB(yuv_pixels[i].y, yuv_pixels[i].u, yuv_pixels[i].v, &r, &g, &b);
-        img->data[i]->red = clamp(r);
-        img->data[i]->green = clamp(g);
-        img->data[i]->blue = clamp(b);
+    i = 0;
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++, i++) {
+            int r, g, b;
+            convert_YUV_to_RGB(yuv_pixels[i].y, yuv_pixels[i].u, yuv_pixels[i].v, &r, &g, &b);
+            img->data[y][x].red = clamp_255(r);
+            img->data[y][x].green = clamp_255(g);
+            img->data[y][x].blue = clamp_255(b);
+        }
     }
 
+    free(yuv_pixels);
+    free(hist_Y);
+    free(cdf_Y);
 }

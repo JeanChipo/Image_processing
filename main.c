@@ -252,7 +252,7 @@ int main() {
         }
         case 2: {
             t_bmp24 *image = bmp24_loadImage("./lena_color.bmp");
-            printf("choisissez le traitement a appliquer:\n 1) negatif\n 2) niveaux de gris\n 3) luminosite\n 4) filtres \n");
+            printf("choisissez le traitement a appliquer:\n 1) negatif\n 2) niveaux de gris\n 3) luminosite\n 4) filtres\n 5) egalisation\n");
             int choix = 0;
             scanf("%d", &choix);
             switch (choix) {
@@ -272,11 +272,15 @@ int main() {
                         printf("valeur invalide, veuillez reessayer\n");
                         scanf("%d", &brightness);
                     }
-                    bmp24_brightness (image, brightness);
+                    bmp24_brightness(image, brightness);
                     break;
                 }
                 case 4: {
                     process_filters24(image);
+                    break;
+                }
+                case 5: {
+                    bmp24_equalize(image);
                     break;
                 }
             }
