@@ -3,19 +3,20 @@
 #include "bmp24.h"
 
 t_bmp24 * bmp24_loadImage(const char * filename) {
+    // Ouvre le fichier BMP
     FILE *file = fopen(filename, "rb");
 
     t_bmp_header header;
     t_bmp_info info;
 
-    // Lecture du header BMP (14 octets)
+    // Lecture du header BMP 
     fread(&header.type, sizeof(uint16_t), 1, file);
     fread(&header.size, sizeof(uint32_t), 1, file);
     fread(&header.reserved1, sizeof(uint16_t), 1, file);
     fread(&header.reserved2, sizeof(uint16_t), 1, file);
     fread(&header.offset, sizeof(uint32_t), 1, file);
 
-    // Lecture du header info BMP (40 octets)
+    // Lecture du header info BMP 
     fread(&info.size, sizeof(uint32_t), 1, file);
     fread(&info.width, sizeof(int32_t), 1, file);
     fread(&info.height, sizeof(int32_t), 1, file);
@@ -54,6 +55,7 @@ t_bmp24 * bmp24_loadImage(const char * filename) {
 }
 
 void bmp24_saveImage(const char * filename, t_bmp24 * img) {
+    // Ouvre le fichier BMP en écriture
     FILE *file = fopen(filename, "wb");
     if (!file) return;
 
@@ -149,8 +151,10 @@ void bmp24_free(t_bmp24 *img) {
     free(img);
 }
 
+// inversion des couleurs d’une image en couleur //
 
 void bmp24_negative (t_bmp24 * img) {
+    // parcourt chaque pixel de l'image et inverse ses valeurs RGB
     for (int y = 0; y < img->height; y++) {
         for (int x = 0; x < img->width; x++) {
             img->data[y][x].red = 255 - img->data[y][x].red;
@@ -160,9 +164,11 @@ void bmp24_negative (t_bmp24 * img) {
     }
 }
 
-
+// passage d'une image couleur en niveaux de gris //
 
 void bmp24_grayscale (t_bmp24 * img) {
+    // parcourt chaque pixel de l'image et calcule la valeur moyenne des composantes RGB
+    // puis assigne cette valeur à chaque composante RGB pour obtenir une image en niveaux de gris
     for (int y = 0; y < img->height; y++) {
         for (int x = 0; x < img->width; x++) {
             uint8_t gray = (img->data[y][x].red + img->data[y][x].green + img->data[y][x].blue) / 3;
@@ -173,10 +179,13 @@ void bmp24_grayscale (t_bmp24 * img) {
     }
 }
 
+// augmentation de la luminosité d’une image couleur //
 
 void bmp24_brightness (t_bmp24 * img, int value) {
+    // parcourt chaque pixel de l'image et ajoute la valeur de luminosité à chaque composante RGB
     for (int y = 0; y < img->height; y++) {
         for (int x = 0; x < img->width; x++) {
+            // vérification des limites de la valeur du rouge
             if (img->data[y][x].red + value > 255) {
                 img->data[y][x].red = 255;
             } else if (img->data[y][x].red + value < 0) {
@@ -184,7 +193,8 @@ void bmp24_brightness (t_bmp24 * img, int value) {
             } else {
                 img->data[y][x].red = img->data[y][x].red + value;
             }
-
+            
+            // vérification des limites de la valeur du vert
             if (img->data[y][x].green + value > 255) {
                 img->data[y][x].green = 255;
             } else if (img->data[y][x].green + value < 0) {
@@ -193,6 +203,7 @@ void bmp24_brightness (t_bmp24 * img, int value) {
                 img->data[y][x].green = img->data[y][x].green + value;
             }
 
+            // vérification des limites de la valeur du bleu
             if (img->data[y][x].blue + value > 255) {
                 img->data[y][x].blue = 255;
             } else if (img->data[y][x].blue + value < 0) {

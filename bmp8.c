@@ -63,16 +63,26 @@ void bmp8_printInfo(t_bmp8 *img) {
     printf("  | Data Size: %u \n", img->dataSize);
 }
 
+
+// inversion des couleurs d’une image en noir et blanc //
+
 void bmp8_negative(t_bmp8 * img) {
+    // parcourt chaque pixel de l'image et inverse sa valeur
     for (unsigned int i = 0; i < img->dataSize; i++) {
         unsigned int NewValue = 255 - img->data[i] ;
         img->data[i] = NewValue ;
     }
 }
 
+
+
+// augmentation de la luminosité d’une image en niveaux de gris //
+
 void bmp8_brightness(t_bmp8 * img, int brightness) {
+    // parcourt chaque pixel et ajoute la valeur de luminosité
     for (unsigned int i = 0; i < img->dataSize; i++) {
         int newValue = img->data[i] + brightness;
+        // vérification des limites de la valeur
         if (newValue < 0) {
             img->data[i] = 0;
         } else if (newValue > 255) {
@@ -83,8 +93,10 @@ void bmp8_brightness(t_bmp8 * img, int brightness) {
     }
 }
 
+// cahngement des couleurs d’une image a 255 ou 0 //
 
 void bmp8_threshold(t_bmp8 * img) {
+    // parcourt chaque pixel et change la valeur a 255 ou 0 si elle est au dessus ou en dessous de 128
     for (unsigned int i = 0; i < img->dataSize; i++) {
         if (img->data[i] < 128) {
             img->data[i] = 0;
