@@ -1,3 +1,9 @@
+/* 
+Fichier d'en-tête de traitement d'images BMP 8 en niveaux de gris
+Il contient les prototypes des fonctions de chargement, sauvegarde, et traitement d'images en niveaux de gris.
+auteurs : @JeanChipo, @WarennOne
+*/
+
 #ifndef BMP8
 #define BMP8
 

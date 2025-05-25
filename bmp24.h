@@ -1,3 +1,9 @@
+/* 
+Fichier d'en-tête de traitement d'images BMP 24 en couleur.
+Il contient les prototypes des fonctions de chargement, sauvegarde, et traitement d'images en couleur.
+auteurs : @JeanChipo, @WarennOne
+*/
+
 #ifndef BMP24
 #define BMP24
 #include <stdint.h>

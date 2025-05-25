@@ -1,3 +1,9 @@
+/* 
+Fichier principal permettant de relier les différents fichiers de traitement d'image.
+Il charge une image .bmp, applique des traitements, et sauvegarde le résultat.
+auteurs : @JeanChipo, @WarennOne
+*/
+
 #include <stdio.h>
 #include "bmp8.h"
 #include "bmp24.h"
