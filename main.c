@@ -4,6 +4,7 @@
 #include "egalisation.h"
 
 void process_brightness(t_bmp8 * image) {
+    // fonction pour appliquer un traitement de luminosité à une image en niveaux de gris
     int brightness;
     printf("entrez la valeur de luminosite (entre -255 et 255): \n");
     scanf("%d", &brightness);
@@ -14,7 +15,6 @@ void process_brightness(t_bmp8 * image) {
     bmp8_brightness(image, brightness);
 }
 
-// Fonction pour appliquer un filtre à une image en niveaux de gris //
 
 void process_filters(t_bmp8 * image) {
     // demande a l'utilisateur quel filtre appliquer et applique une vérification
@@ -101,8 +101,6 @@ void process_filters(t_bmp8 * image) {
 }
 
 
-
-
 void process_convolution(t_bmp24 *image, float *kernel[3], int KernelSize) {
     t_bmp24 *copy = bmp24_allocate(&image->header, &image->header_info, image->colorDepth);
 
@@ -123,9 +121,9 @@ void process_convolution(t_bmp24 *image, float *kernel[3], int KernelSize) {
 }
 
 
-// Fonction pour appliquer un filtre à une image en couleur //
+void process_filters24(t_bmp24 * image) {    
+    // Fonction pour appliquer un filtre à une image en couleur //
 
-void process_filters24(t_bmp24 * image) {
     // demande a l'utilisateur quel filtre appliquer et applique une vérification
     printf("choisissez le filtre:\n 1) box_blur\n 2) gaussian_blur\n 3) outline\n 4) emboss\n 5) sharpen\n 6) custom \n");
     int filter_select = 1;
@@ -211,29 +209,26 @@ void process_filters24(t_bmp24 * image) {
 
 
 
-
-
-
-
 int main() {
     int bmp_ver; 
-    printf("quel format de bmp utilise votre image? \n 1) bmp8 - niveau de gris \n 2) bmp24 - en couleur \n");
+    printf("quel format de bmp utilise votre image? \n 1) bmp8 - niveau de gris \n 2) bmp24 - en couleur \n> ");
     scanf("%d", &bmp_ver);
-    // while (bmp_ver < 1 || bmp_ver > 4) {
-    //     printf("format invalide, veuillez saisir si votre bmp est sur 8 bits (niveau de gris) ou 24 bits (en couleur) \n");
-    //     scanf("%d", &bmp_ver);
-    // }
+    while (bmp_ver < 1 || bmp_ver > 2) {
+        printf("format invalide, veuillez saisir si votre bmp est sur 8 bits (niveau de gris) ou 24 bits (en couleur) \n> ");
+        scanf("%d", &bmp_ver);
+    }
     switch (bmp_ver) {
         case 1: {
             // Chargement de l'image en niveaux de gris
             t_bmp8 *image = bmp8_loadImage("Images_input/lena_gray.bmp");
+            bmp8_printInfo(image);
 
             // demande a l'utilisateur quel traitement appliquer et applque une vérification
             int choix = 0;
-            printf("quel traitement voulez-vous appliquer a l'image?\n 1) negatif\n 2) luminosite\n 3) threshold\n 4) filtres \n 5) egalisation\n");
+            printf("quel traitement voulez-vous appliquer a l'image?\n 1) negatif\n 2) luminosite\n 3) threshold\n 4) filtres \n 5) egalisation\n> ");
             scanf("%d", &choix);
             while (choix < 1 || choix > 5) {
-                printf("\nchoix invalide, veuillez reessayer\n");
+                printf("\nchoix invalide, veuillez reessayer.\n> ");
                 scanf("%d", &choix);
             }
         
@@ -256,18 +251,15 @@ int main() {
                     break;
                 }
                 case 5: {
-                    t_bmp8 *image = bmp8_loadImage("Images_input/lena_gray.bmp");
                     bmp8_equalize(image);
-                    bmp8_printInfo(image);
                     bmp8_saveImage("Images_output/lena_gray_eq.bmp", image);
                     bmp8_free(image);
-                    printf("Traitement fini\n");
                     break;
                 }
             }
-
-            // Sauvegarde de l'image traitée et affichage des informations
-            bmp8_printInfo(image);
+            printf("Traitement fini !\n");
+            
+            // Sauvegarde de l'image traitée
             bmp8_saveImage("Images_output/lena_gray_copy.bmp", image);
             bmp8_free(image);
             break;
@@ -279,11 +271,11 @@ int main() {
             t_bmp24 *image = bmp24_loadImage("Images_input/lena_color.bmp");
 
             // demande a l'utilisateur quel traitement appliquer et applque une vérification
-            printf("choisissez le traitement a appliquer:\n 1) negatif\n 2) niveaux de gris\n 3) luminosite\n 4) filtres\n 5) egalisation\n");
+            printf("choisissez le traitement a appliquer:\n 1) negatif\n 2) niveaux de gris\n 3) luminosite\n 4) filtres\n 5) egalisation\n> ");
             int choix = 0;
             scanf("%d", &choix);
             while (choix < 1 || choix > 5) {
-                printf("\nchoix invalide, veuillez reessayer\n");
+                printf("\nchoix invalide, veuillez reessayer\n> ");
                 scanf("%d", &choix);
             }
 
@@ -298,11 +290,11 @@ int main() {
                     break;
                 }
                 case 3: {
-                    printf("entrez la valeur de luminosite (entre -255 et 255): \n");
+                    printf("entrez la valeur de luminosite (entre -255 et 255)\n> ");
                     int brightness;
                     scanf("%d", &brightness);
                     while (brightness < -255 || brightness > 255) {
-                        printf("valeur invalide, veuillez reessayer\n");
+                        printf("valeur invalide, veuillez reessayer\n> ");
                         scanf("%d", &brightness);
                     }
                     bmp24_brightness(image, brightness);
@@ -317,8 +309,9 @@ int main() {
                     break;
                 }
             }
-
-            // Sauvegarde de l'image traitée et affichage des informations
+            printf("Traitement fini\n");
+            
+            // Sauvegarde de l'image traitée
             bmp24_saveImage("Images_output/lena_color_copy.bmp", image);
             bmp24_free(image);
             break;

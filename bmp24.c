@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include "bmp24.h"
 
+
+// ################################################### //
+// ### Lecture et écriture d’une image en couleurs ### //
+// ################################################### //
+
 t_bmp24 * bmp24_loadImage(const char * filename) {
     // Ouvre le fichier BMP
     FILE *file = fopen(filename, "rb");
@@ -103,6 +108,8 @@ void bmp24_saveImage(const char * filename, t_bmp24 * img) {
 t_pixel ** bmp24_allocateDataPixels (int width, int height) {
     t_pixel **data = (t_pixel **)malloc(height * sizeof(t_pixel *));
     int y;
+
+    // on parcours chaque ligne de l'image et alloue de la mémoire pour chaque ligne pour stocker les pixels
     for (y = 0; y < height; y++) {
         data[y] = (t_pixel *)malloc(width * sizeof(t_pixel));
         if (data[y] == NULL) {
@@ -114,10 +121,11 @@ t_pixel ** bmp24_allocateDataPixels (int width, int height) {
             return NULL;
         }
     }
-    return data;
+    return data;    // avec data le tableau de pixels
 }
 
 void bmp24_freeDataPixels(t_pixel **pixels, int height) {
+    // on libère la mémoire allouée pour chaque ligne de pixels
     for (int y = 0; y < height; y++) {
         free(pixels[y]);
     }
@@ -127,8 +135,8 @@ void bmp24_freeDataPixels(t_pixel **pixels, int height) {
 
 t_bmp24 * bmp24_allocate(t_bmp_header *header, t_bmp_info *header_info, int colorDepth) {
     t_bmp24 *img = (t_bmp24 *)malloc(sizeof(t_bmp24));
-    if (!img) return NULL;
 
+    // on alloue la mémoire pour t_bmp24
     img->header = *header;
     img->header_info = *header_info;
     img->width = header_info->width;
@@ -136,7 +144,7 @@ t_bmp24 * bmp24_allocate(t_bmp_header *header, t_bmp_info *header_info, int colo
     img->colorDepth = colorDepth;
     img->data = bmp24_allocateDataPixels(img->width, img->height);
 
-    if (img->data == NULL) {
+    if (img->data == NULL) {    // on s'assure que l'allocation de mémoire pour les pixels a réussi
         free(img);
         return NULL;
     }
@@ -145,13 +153,17 @@ t_bmp24 * bmp24_allocate(t_bmp_header *header, t_bmp_info *header_info, int colo
 }
 
 void bmp24_free(t_bmp24 *img) {
-    if ((img != NULL) && (img->data != NULL)) {
-        bmp24_freeDataPixels(img->data, img->height);
+    if ((img != NULL) && (img->data != NULL)) { // si l'image et les pixels existent
+        bmp24_freeDataPixels(img->data, img->height);   // on libère les pixels
         }
     free(img);
 }
 
-// inversion des couleurs d’une image en couleur //
+
+
+// ########################################## //
+// ### Traitements d’une image en couleur ### //
+// ########################################## //
 
 void bmp24_negative (t_bmp24 * img) {
     // parcourt chaque pixel de l'image et inverse ses valeurs RGB
@@ -164,7 +176,6 @@ void bmp24_negative (t_bmp24 * img) {
     }
 }
 
-// passage d'une image couleur en niveaux de gris //
 
 void bmp24_grayscale (t_bmp24 * img) {
     // parcourt chaque pixel de l'image et calcule la valeur moyenne des composantes RGB
@@ -179,7 +190,6 @@ void bmp24_grayscale (t_bmp24 * img) {
     }
 }
 
-// augmentation de la luminosité d’une image couleur //
 
 void bmp24_brightness (t_bmp24 * img, int value) {
     // parcourt chaque pixel de l'image et ajoute la valeur de luminosité à chaque composante RGB
@@ -215,7 +225,9 @@ void bmp24_brightness (t_bmp24 * img, int value) {
     }
 }
 
+
 uint8_t clamp(int value) {
+    // fonction pour rogner une valeur entre 0 et 255, utilisée dans bmp24_convolution
     if (value < 0) return 0;
     else if (value > 255) return 255;
     else return (uint8_t)value;
@@ -226,13 +238,13 @@ t_pixel bmp24_convolution (t_bmp24 * img, int x, int y, float ** kernel, int ker
     float sum_red = 0, sum_green = 0, sum_blue = 0;
     t_pixel new_pixel;
 
-    // Parcourir le noyau
+    // on parcours le noyau (masque du filtre), et on applique le fitre sur les pixels voisins
     for (int ky = -n; ky <= n; ky++) {
         for (int kx = -n; kx <= n; kx++) {
             int pixelX = x + kx;
             int pixelY = y + ky;
             if (pixelX < 0 || pixelX >= img->width || pixelY < 0 || pixelY >= img->height) {
-                continue; // Ignore pixels outside the image
+                continue; // on ignore les pixels en dehors des limites de l'image
             }
             float k = kernel[ky + n][kx + n];
             sum_red += k * img->data[pixelY][pixelX].red;
@@ -241,7 +253,7 @@ t_pixel bmp24_convolution (t_bmp24 * img, int x, int y, float ** kernel, int ker
         }
     }
 
-    // Rogner a [0,255]
+    // Rogner a [0,255] pour avoir des pixels valides
     new_pixel.red = clamp((int)sum_red);
     new_pixel.green = clamp((int)sum_green);
     new_pixel.blue = clamp((int)sum_blue);

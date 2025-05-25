@@ -6,7 +6,9 @@
 #include "egalisation.h"
 
 
-// crée un histogramme pour une image en niveaux de gris (8 bits) //
+// ############################################################################ //
+// ### création d'un histogramme pour une image en niveaux de gris (8 bits) ### //
+// ############################################################################ //
 
 unsigned int * bmp8_computeHistogram(t_bmp8 * img) {
     // création d'un tableau pour stocker l'histogramme
@@ -20,7 +22,6 @@ unsigned int * bmp8_computeHistogram(t_bmp8 * img) {
     return histogram;
 }
 
-// crée un histogramme cumulatif normalisé pour une image en niveaux de gris (8 bits) //
 
 unsigned int * bmp8_computeCDF(unsigned int * hist, t_bmp8 * img) {
     // crée un tableau pour l'histogramme cumulatif
@@ -47,7 +48,6 @@ unsigned int * bmp8_computeCDF(unsigned int * hist, t_bmp8 * img) {
     return hist_eq;
 }
 
-// aplication de l'égalisation pour une image en niveaux de gris (8 bits) //
 
 void bmp8_equalize(t_bmp8 * img) {
     // calcule l'histogramme de l'image
@@ -64,18 +64,23 @@ void bmp8_equalize(t_bmp8 * img) {
 
 
 void convert_RGB_to_YUV(int r, int g, int b, int *y, int *u, int *v) {
+    // applique la formule de conversion RGB vers YUV
     *y = 0.299 * r + 0.587 * g + 0.114 * b;
     *u = -0.14713 * r - 0.28886 * g + 0.436 * b ;
     *v = 0.615 * r - 0.51499 * g - 0.10001 * b;
 }
 
 void convert_YUV_to_RGB(int y, int u, int v, int *r, int *g, int *b) {
+    // applique la formule de conversion YUV vers RGB
     *r = y + 1.13983 * v;
     *g = y - 0.39465 * u - 0.58060 * v;
     *b = y + 2.03211 * u;
 }
 
-// crée un histogramme pour une image couleur (24 bits) //
+
+// ################################################################## //
+// ### création d'un histogramme pour une image couleur (24 bits) ### //
+// ################################################################## //
 
 unsigned int * bmp24_computeHistogram(t_bmp24 * img) {
     // création d'un tableau pour stocker l'histogramme et initialisation à 0
@@ -96,8 +101,8 @@ unsigned int * bmp24_computeHistogram(t_bmp24 * img) {
 }
 
 
-// crée un histogramme cumulatif normalisé pour une image couleur (24 bits) //
 
+// crée un histogramme cumulatif normalisé pour une image couleur (24 bits)
 unsigned int * bmp24_computeCDF(unsigned int * hist, t_bmp24 * img) {
     // crée un tableau pour l'histogramme cumulatif
     unsigned int *cdf = malloc(256 * sizeof(unsigned int));
@@ -125,6 +130,7 @@ unsigned int * bmp24_computeCDF(unsigned int * hist, t_bmp24 * img) {
 
 
 int clamp_255(int value) {
+    // fonction pour rogner une valeur entre 0 et 255
     if (value < 0) {
         return 0;
     } else if (value > 255) {
@@ -139,7 +145,7 @@ void bmp24_equalize(t_bmp24 * img) {
     int nb_pixels = width * height;
     t_yuv *yuv_pixels = malloc(nb_pixels * sizeof(t_yuv));
 
-    // convertition RGB -> YUV
+    // conversion RGB -> YUV
     int i = 0;
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++, i++) {
@@ -157,7 +163,7 @@ void bmp24_equalize(t_bmp24 * img) {
     // hist_cumulé & normalisé
     unsigned int *cdf_Y = bmp24_computeCDF(hist_Y, img);
 
-    // appliquer equalise à Y
+    // appliquer equalize à Y
     for (int i = 0; i < nb_pixels; i++) {
         yuv_pixels[i].y = cdf_Y[clamp_255(yuv_pixels[i].y)];
     }
@@ -174,6 +180,7 @@ void bmp24_equalize(t_bmp24 * img) {
         }
     }
 
+    // et on oublie pas de libérer la mémoire
     free(yuv_pixels);
     free(hist_Y);
     free(cdf_Y);
