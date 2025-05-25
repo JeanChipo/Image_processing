@@ -14,6 +14,7 @@ auteurs : @JeanChipo, @WarennOne
 // ################################################### //
 
 t_bmp24 * bmp24_loadImage(const char * filename) {
+    /* charge une image .bmp24 */
     // Ouvre le fichier BMP
     FILE *file = fopen(filename, "rb");
 
@@ -66,6 +67,7 @@ t_bmp24 * bmp24_loadImage(const char * filename) {
 }
 
 void bmp24_saveImage(const char * filename, t_bmp24 * img) {
+    /* sauvegarde une image .bmp24 */
     // Ouvre le fichier BMP en écriture
     FILE *file = fopen(filename, "wb");
     if (!file) return;
@@ -112,6 +114,7 @@ void bmp24_saveImage(const char * filename, t_bmp24 * img) {
 }
 
 t_pixel ** bmp24_allocateDataPixels (int width, int height) {
+    // alloue de la mémoire pour un tableau de pixels 2D
     t_pixel **data = (t_pixel **)malloc(height * sizeof(t_pixel *));
     int y;
 
@@ -131,7 +134,7 @@ t_pixel ** bmp24_allocateDataPixels (int width, int height) {
 }
 
 void bmp24_freeDataPixels(t_pixel **pixels, int height) {
-    // on libère la mémoire allouée pour chaque ligne de pixels
+    /* libère la mémoire allouée pour les pixels de l'image */
     for (int y = 0; y < height; y++) {
         free(pixels[y]);
     }
@@ -140,6 +143,7 @@ void bmp24_freeDataPixels(t_pixel **pixels, int height) {
 
 
 t_bmp24 * bmp24_allocate(t_bmp_header *header, t_bmp_info *header_info, int colorDepth) {
+    /* alloue de la mémoire pour une image BMP 24 bits */
     t_bmp24 *img = (t_bmp24 *)malloc(sizeof(t_bmp24));
 
     // on alloue la mémoire pour t_bmp24
@@ -159,6 +163,7 @@ t_bmp24 * bmp24_allocate(t_bmp_header *header, t_bmp_info *header_info, int colo
 }
 
 void bmp24_free(t_bmp24 *img) {
+    /* libère la mémoire allouée pour une image BMP 24 bits */
     if ((img != NULL) && (img->data != NULL)) { // si l'image et les pixels existent
         bmp24_freeDataPixels(img->data, img->height);   // on libère les pixels
         }
@@ -172,6 +177,7 @@ void bmp24_free(t_bmp24 *img) {
 // ########################################## //
 
 void bmp24_negative (t_bmp24 * img) {
+    /* applique un effet négatif à l'image */
     // parcourt chaque pixel de l'image et inverse ses valeurs RGB
     for (int y = 0; y < img->height; y++) {
         for (int x = 0; x < img->width; x++) {
@@ -184,6 +190,8 @@ void bmp24_negative (t_bmp24 * img) {
 
 
 void bmp24_grayscale (t_bmp24 * img) {
+    /* convertit l'image en niveaux de gris */
+
     // parcourt chaque pixel de l'image et calcule la valeur moyenne des composantes RGB
     // puis assigne cette valeur à chaque composante RGB pour obtenir une image en niveaux de gris
     for (int y = 0; y < img->height; y++) {
@@ -198,6 +206,8 @@ void bmp24_grayscale (t_bmp24 * img) {
 
 
 void bmp24_brightness (t_bmp24 * img, int value) {
+    /* ajuste la luminosité de l'image */
+
     // parcourt chaque pixel de l'image et ajoute la valeur de luminosité à chaque composante RGB
     for (int y = 0; y < img->height; y++) {
         for (int x = 0; x < img->width; x++) {
@@ -233,13 +243,14 @@ void bmp24_brightness (t_bmp24 * img, int value) {
 
 
 uint8_t clamp(int value) {
-    // fonction pour rogner une valeur entre 0 et 255, utilisée dans bmp24_convolution
+    /* rogne une valeur entre 0 et 255, utilisée dans bmp24_convolution */
     if (value < 0) return 0;
     else if (value > 255) return 255;
     else return (uint8_t)value;
 }
 
 t_pixel bmp24_convolution (t_bmp24 * img, int x, int y, float ** kernel, int kernelSize) {
+    /* applique une convolution à un pixel de l'image en utilisant un noyau (masque) */
     int n = kernelSize / 2;
     float sum_red = 0, sum_green = 0, sum_blue = 0;
     t_pixel new_pixel;

@@ -18,6 +18,7 @@ auteurs : @JeanChipo, @WarennOne
 // ############################################################################ //
 
 unsigned int * bmp8_computeHistogram(t_bmp8 * img) {
+    /* crée un histogramme pour une image en niveaux de gris */
     // création d'un tableau pour stocker l'histogramme
     unsigned int *histogram = malloc(256 * sizeof(unsigned int));
     for (int i = 0; i < 256; i++) histogram[i] = 0;
@@ -31,6 +32,8 @@ unsigned int * bmp8_computeHistogram(t_bmp8 * img) {
 
 
 unsigned int * bmp8_computeCDF(unsigned int * hist, t_bmp8 * img) {
+    /* crée un histogramme cumulatif normalisé pour une image en niveaux de gris */
+
     // crée un tableau pour l'histogramme cumulatif
     unsigned int *cdf = malloc(256 * sizeof(unsigned int));
     cdf[0] = hist[0];
@@ -57,6 +60,8 @@ unsigned int * bmp8_computeCDF(unsigned int * hist, t_bmp8 * img) {
 
 
 void bmp8_equalize(t_bmp8 * img) {
+    /* applique l'égalisation d'histogramme à une image en niveaux de gris */
+
     // calcule l'histogramme de l'image
     unsigned int *hist = bmp8_computeHistogram(img);
     // calcule l'histogramme cumulatif normalisé
@@ -75,14 +80,14 @@ void bmp8_equalize(t_bmp8 * img) {
 
 
 void convert_RGB_to_YUV(int r, int g, int b, int *y, int *u, int *v) {
-    // applique la formule de conversion RGB vers YUV
+    /* convertit les valeurs RGB en YUV */
     *y = 0.299 * r + 0.587 * g + 0.114 * b;
     *u = -0.14713 * r - 0.28886 * g + 0.436 * b ;
     *v = 0.615 * r - 0.51499 * g - 0.10001 * b;
 }
 
 void convert_YUV_to_RGB(int y, int u, int v, int *r, int *g, int *b) {
-    // applique la formule de conversion YUV vers RGB
+    /* convertit les valeurs YUV en RGB */
     *r = y + 1.13983 * v;
     *g = y - 0.39465 * u - 0.58060 * v;
     *b = y + 2.03211 * u;
@@ -90,6 +95,8 @@ void convert_YUV_to_RGB(int y, int u, int v, int *r, int *g, int *b) {
 
 
 unsigned int * bmp24_computeHistogram(t_bmp24 * img) {
+    /* crée un histogramme pour une image couleur (24 bits) */
+ 
     // création d'un tableau pour stocker l'histogramme et initialisation à 0
     unsigned int *histogram = malloc(256 * sizeof(unsigned int));
     int trash;
@@ -109,8 +116,8 @@ unsigned int * bmp24_computeHistogram(t_bmp24 * img) {
 
 
 
-// crée un histogramme cumulatif normalisé pour une image couleur (24 bits)
 unsigned int * bmp24_computeCDF(unsigned int * hist, t_bmp24 * img) {
+    /* crée un histogramme cumulatif normalisé pour une image couleur */
     // crée un tableau pour l'histogramme cumulatif
     unsigned int *cdf = malloc(256 * sizeof(unsigned int));
     cdf[0] = hist[0];
@@ -137,7 +144,7 @@ unsigned int * bmp24_computeCDF(unsigned int * hist, t_bmp24 * img) {
 
 
 int clamp_255(int value) {
-    // fonction pour rogner une valeur entre 0 et 255
+    /* rogne une valeur entre 0 et 255 */
     if (value < 0) {
         return 0;
     } else if (value > 255) {
@@ -147,6 +154,7 @@ int clamp_255(int value) {
 }
 
 void bmp24_equalize(t_bmp24 * img) {
+    /* applique l'égalisation d'histogramme à une image couleur (24 bits) */
     int width = img->width;
     int height = img->height;
     int nb_pixels = width * height;

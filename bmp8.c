@@ -15,6 +15,7 @@ auteurs : @JeanChipo, @WarennOne
 // ########################################################## //
 
 t_bmp8 * bmp8_loadImage(const char * filename) {
+    /* charge une image .bmp8 */
     FILE *file = fopen(filename, "rb"); // rb for read binary
     t_bmp8 *img = (t_bmp8 *)malloc(sizeof(t_bmp8));
 
@@ -46,6 +47,7 @@ t_bmp8 * bmp8_loadImage(const char * filename) {
 }
 
 void bmp8_saveImage(const char * filename, t_bmp8 * img) {
+    /* sauvegarde une image .bmp8 */
     FILE *file = fopen(filename, "wb"); // wb pour write binary
 
     // écriture du header, de la table de couleurs, et des données de l'image dans le fichier
@@ -56,7 +58,7 @@ void bmp8_saveImage(const char * filename, t_bmp8 * img) {
 }
 
 void bmp8_free(t_bmp8 *img) {
-    // libération de la mémoire allouée pour l'image
+    /* libère la mémoire allouée pour l'image */
     if (img) {
         if (img->data) {
             free(img->data); 
@@ -71,6 +73,7 @@ void bmp8_free(t_bmp8 *img) {
 // ###################################################### //
 
 void bmp8_printInfo(t_bmp8 *img) {
+    /* affiche les informations de l'image */
     printf("\n");
     printf("Image Info:\n");
     printf("  | Width: %u \n", img->width);
@@ -81,7 +84,7 @@ void bmp8_printInfo(t_bmp8 *img) {
 }
 
 void bmp8_negative(t_bmp8 * img) {
-    // parcours chaque pixel de l'image et inverse sa valeur
+    /* applique un effet négatif à l'image */
     for (unsigned int i = 0; i < img->dataSize; i++) {
         unsigned int NewValue = 255 - img->data[i] ;
         img->data[i] = NewValue ;
@@ -90,6 +93,7 @@ void bmp8_negative(t_bmp8 * img) {
 
 
 void bmp8_brightness(t_bmp8 * img, int brightness) {
+    /* ajuste la luminosité de l'image */
     // parcours chaque pixel et ajoute la valeur de luminosité
     for (unsigned int i = 0; i < img->dataSize; i++) {
         int newValue = img->data[i] + brightness;
@@ -105,6 +109,7 @@ void bmp8_brightness(t_bmp8 * img, int brightness) {
 }
 
 void bmp8_threshold(t_bmp8 * img) {
+    /* applique un seuillage à l'image pour la convertir en image binaire */
     // parcours chaque pixel et change la valeur a 255 ou 0 si elle est au dessus ou en dessous de 128
     for (unsigned int i = 0; i < img->dataSize; i++) {
         if (img->data[i] < 128) {
@@ -120,6 +125,7 @@ void bmp8_threshold(t_bmp8 * img) {
 // ######################## //
 
 void bmp8_applyFilter(t_bmp8 * img, float ** kernel, int kernelSize) {
+    /* applique un filtre à l'image en niveaux de gris selon un noyau d'entrée */
     int n = kernelSize / 2;
     unsigned char *newData = (unsigned char *)malloc(img->dataSize * sizeof(unsigned char));
 
