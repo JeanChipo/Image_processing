@@ -41,11 +41,7 @@ unsigned int * bmp8_computeCDF(unsigned int * hist, t_bmp8 * img) {
 
 void bmp8_equalize(t_bmp8 * img) {
     unsigned int *hist = bmp8_computeHistogram(img);
-    printf("aaaaa");
     unsigned int *hist_eq = bmp8_computeCDF(hist, img);
-    for (int i = 0; i < 256; i++) {
-        printf("Valeur %d : %d\n", hist[i], hist_eq[i]);
-    }
     for (int i = 0; i < img->dataSize; i++) {
         img->data[i] = hist_eq[img->data[i]];
     }
@@ -70,9 +66,9 @@ void bmp24_equalize(t_bmp24 * img) {
 
     // convertition RGB -> YUV
     for (int i = 0; i < nb_pixels; i++) {
-        int r = img->data[3*i];
-        int g = img->data[3*i + 1];
-        int b = img->data[3*i + 2];
+        int r = img->data[i]->red;
+        int g = img->data[i]->green;
+        int b = img->data[i]->blue;
         convert_RGB_to_YUV(r, g, b, &yuv_pixels[i].y, &yuv_pixels[i].u, &yuv_pixels[i].v);
     }
 

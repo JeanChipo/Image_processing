@@ -286,11 +286,18 @@ int main() {
             break;
         } 
         case 3: {
-            t_bmp8 *image = bmp8_loadImage("./barbara_gray.bmp");
+            t_bmp8 *image = bmp8_loadImage("./lena_gray.bmp");
+            if (!image) {
+                printf("Erreur lors du chargement de l'image.\n");
+                break;
+            }
             bmp8_equalize(image);
+            bmp8_printInfo(image);
+            bmp8_saveImage("lena_gray_eq.bmp", image);
+            bmp8_free(image);
+            printf("Traitement fini\n");
             break;
         }
-        printf("Traitement fini\n");
     }
     return 0;
 }
